@@ -304,19 +304,12 @@ return function (QCClient)
 		end,
 		
 		CreatePhrases = function()
-			--// locals
-			local Gui = Plr:WaitForChild("PlayerGui"):WaitForChild("OspryQC_Menu")
-			local Pages = Gui:WaitForChild("Background"):WaitForChild("Pages")
-			local CategoryOptions = Gui:WaitForChild("Background"):WaitForChild("Options")
-			local Templates = QCClient.Shared:WaitForChild("UI"):WaitForChild("Templates")
-
-			local root = QCClient.Phrases[1] -- Skips the entire Table shenanigans with it starting with 1.
-
-			--// Debug Prints
-			QCClient:Debug("Creating Categorys and Phrases...")
+			--// Phrase Table
+			local Phrases = QCClient.Phrases
+			local PhraseRoot = Phrases[1] -- Skips the entire Table shenanigans with it starting with 1.
 			
 			--// Found Phrases and Categorys
-			QCClient:Debug("Found Categorys and Phrases,")
+			QCClient:Debug("Found Categorys and Phrases, check Studio's Output to view results.")
 			QCClient:Debug(QCClient.Phrases)
 			
 			
@@ -324,11 +317,20 @@ return function (QCClient)
 			--// Check UserInputService
 			if UIS.VREnabled and QCClient.Config.Enable_NexusVR_Compat then
 				--// Initate Phrases for VR Interface
-				QCClient.VR.CreatePhrases(root)
+				QCClient.VR.CreatePhrases(PhraseRoot)
 				
 			else
+				--// locals
+				local Gui = Plr:WaitForChild("PlayerGui"):WaitForChild("OspryQC_Menu")
+				local Pages = Gui:WaitForChild("Background"):WaitForChild("Pages")
+				local CategoryOptions = Gui:WaitForChild("Background"):WaitForChild("Options")
+				local Templates = QCClient.Shared:WaitForChild("UI"):WaitForChild("Templates")
+				
+				--// Debug Prints
+				QCClient:Debug("Creating Categorys and Phrases...")
+
 				--// Generate Categorys
-				for categoryName, phraseMap in pairs(root) do
+				for categoryName, phraseMap in pairs(PhraseRoot) do
 					--// Generate Category Button
 					local catButton = Templates.TemplateButton:Clone() :: TextButton
 					catButton.Name = categoryName

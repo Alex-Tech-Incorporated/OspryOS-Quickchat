@@ -7,6 +7,10 @@ local UIS = game:GetService("UserInputService")
 local RS = game:GetService("ReplicatedStorage")
 local TS = game:GetService("TweenService")
 
+--// Player
+local Plr = Players.LocalPlayer
+local PlayerGui = Plr:WaitForChild("PlayerGui")
+
 --// Module Essentials
 local NexusVRCore
 local TopbarPlus
@@ -18,6 +22,7 @@ local VR = {
 	Fallback_Container = nil, -- Used for VRBottomBar Guis incase something goes wrong
 	Interface = {
 		Button = nil,
+		Gui_Interface = nil,
 	},
 	
 	--// Behavior
@@ -35,6 +40,57 @@ end
 
 
 
+-- Internal functions --
+
+--// Loads all Dependencies of the Module
+local function Load_Dependencies(Client)
+	--// Get TopbarPlus
+	if Client.Config.Enable_TopbarPlus then
+		--// pcall for TopbarPlus Module
+		local success, module = pcall(function()
+			return require(
+				Client.Config.Path_To_TopbarPlus
+			)
+		end)
+
+		--// Check if TopbarPlus can be required
+		if success then
+			TopbarPlus = module
+			VR.TopbarPlus_Availible = true
+			VR:Print("TopbarPlus found!")
+
+		else
+			VR:Warn("Unable to require TopbarPlus, VRBottomBar will be used by default.")
+		end
+	end
+
+	--// Get VRBottomBar
+	if not Client.Config.Enable_VRBottomBar then
+		VR:Warn("Please switch 'Enable_VRBottomBar' to true if you wish for VR Support.")
+		return
+
+	else
+		--// pcall for VRBottomBar Module
+		local success, module = pcall(function()
+			return require(
+				Client.Config.Path_To_VRBottomBar
+			)
+		end)
+
+		--// Check if TopbarPlus can be required
+		if success then
+			VRBottomBar = module
+			VR:Print("VRBottomBar found!")
+
+		else
+			VR:Warn("Failed to require VRBottomBar, aborting VR Systems.")
+			return
+		end
+	end
+end
+
+
+
 --// Export
 return function(Client)
 	return {
@@ -46,50 +102,9 @@ return function(Client)
 			
 			--// Get Nexus VR Core
 			Client.VR.Init_NexusVRCore()
-			
-			--// Get TopbarPlus
-			if Client.Config.Enable_TopbarPlus then
-				--// pcall for TopbarPlus Module
-				local success, module = pcall(function()
-					return require(
-						Client.Config.Path_To_TopbarPlus
-					)
-				end)
 
-				--// Check if TopbarPlus can be required
-				if success then
-					TopbarPlus = module
-					VR.TopbarPlus_Availible = true
-					VR:Print("TopbarPlus found!")
-
-				else
-					VR:Warn("Unable to require TopbarPlus, VRBottomBar will be used by default.")
-				end
-			end
-			
-			--// Get VRBottomBar
-			if not Client.Config.Enable_VRBottomBar then
-				VR:Warn("Please switch 'Enable_VRBottomBar' to true if you wish for VR Support.")
-				return
-				
-			else
-				--// pcall for VRBottomBar Module
-				local success, module = pcall(function()
-					return require(
-						Client.Config.Path_To_VRBottomBar
-					)
-				end)
-
-				--// Check if TopbarPlus can be required
-				if success then
-					VRBottomBar = module
-					VR:Print("VRBottomBar found!")
-
-				else
-					VR:Warn("Failed to require VRBottomBar, aborting VR Systems.")
-					return
-				end
-			end
+			--// Initiate Dependencies
+			Load_Dependencies(Client)
 			
 			--// Prepared
 			VR:Print("Core Systems prepared.")
@@ -184,10 +199,34 @@ return function(Client)
 		Init_NexusVRCore = function()
 			if not Client.Config.Enable_NexusVR_Compat then return end
 			
-			--// Get Nexus VR Core
-			local FoundCore = require(RS:WaitForChild("NexusVRCore"))
-			NexusVRCore = FoundCore
-			VR:Print("NexusVRCore found!")
+			--// Check what Core should be used
+			if Client.Config.Use_NexusVR_Inbuild_Core then
+				VR:Warn("Warning! Using the bundled Nexus VR Core in Nexus VR Character Module is deprecated!")
+				
+				--// Get Nexus VR Core
+				local FoundCore = require(RS:WaitForChild("NexusVRCore"))
+				NexusVRCore = FoundCore
+				VR:Print("Found bundled NexusVRCore!")
+				
+			else
+				--// Get Nexus VR Core
+				local success, module = pcall(function()
+					return require(
+						Client.Config.Path_To_NexusVRCore
+					)
+				end)
+				
+				if success then
+					--// Set VR Table
+					NexusVRCore = module
+					
+					VR:Print("Found NexusVRCore!")
+					
+				else
+					VR:Warn("Unable to find NexusVRCore! VR Systems will not be functional!")
+					return
+				end
+			end
 		end,
 	}
 end
