@@ -64,5 +64,5 @@ return {
 	DebugMode = true, -- Used for Debugging and toggles Debug Prints
 	
 	--// Modules
-	MainModule = 94534925883801, -- The MainModule itself, you can replace this with your own uploaded Module.
+	MainModule = 0, -- The MainModule itself, you can replace this with your own uploaded Module.
 }
