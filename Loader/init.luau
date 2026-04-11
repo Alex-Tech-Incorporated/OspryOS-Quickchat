@@ -1,4 +1,14 @@
--- OspryOS Quickchat Loader --
+--[[
+		-- OspryOS Quickchat Loader --
+	-- Loads the MainModule into the game --
+	
+	
+	All releases of this System can be found on our Github!
+	https://github.com/Alex-Tech-Incorporated/OspryOS-Quickchat
+	
+	
+	Only edit the Loader of you know what you are doing!
+--]]
 
 --// locals
 --// Services
