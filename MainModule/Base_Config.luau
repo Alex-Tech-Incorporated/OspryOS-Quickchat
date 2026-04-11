@@ -3,7 +3,7 @@ return {
 	Enable_TopbarPlus = false,
 	Path_To_TopbarPlus = nil,
 	
-	Enable_NexusVR_Compat = false,
+	VR_Compatibility = false,
 	Use_NexusVR_Inbuild_Core = false,
 	Path_To_NexusVRCore = nil,
 	

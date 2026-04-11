@@ -1,5 +1,12 @@
 -- OspryQC VR Module --
 
+--[[
+	Most of this Script relies heavily on Nexus VR Core.
+	Please check out the Documention of Nexus VR Core to learn more.
+	
+	https://github.com/TheNexusAvenger/Nexus-VR-Core/tree/master/docs
+]]
+
 --// locals
 --// Services
 local Players = game:GetService("Players")
@@ -16,6 +23,16 @@ local NexusVRCore
 local TopbarPlus
 local VRBottomBar
 
+--// TweenService
+local SlideInfo = TweenInfo.new(
+	1,
+	Enum.EasingStyle.Exponential
+)
+local MenuInfo = TweenInfo.new(
+	0.5,
+	Enum.EasingStyle.Exponential
+)
+
 --// VR System Table
 local VR = {
 	--// Essentials
@@ -23,10 +40,12 @@ local VR = {
 	Interface = {
 		Button = nil,
 		Gui_Interface = nil,
+		UIScale = nil,
 	},
 	
 	--// Behavior
 	TopbarPlus_Availible = false,
+	Menu_Shown = false,
 }
 
 -- Essentials --
@@ -41,6 +60,56 @@ end
 
 
 -- Internal functions --
+
+--// Toggles the Visibility of the HomePage
+local function ToggleHomePage(Shown : boolean)
+	--// locals
+	local Interface = VR.Interface.Gui_Interface:GetContainer()
+	local Frame = Interface:WaitForChild("Container")
+	local HomePage = Frame:WaitForChild("Home")
+	
+	if Shown then
+		--// Tween
+		TS:Create(
+			HomePage,
+			SlideInfo,
+			{Position = UDim2.new(0.025, 0, 0.025, 0)}
+		):Play()
+		
+	else
+		--// Tween
+		TS:Create(
+			HomePage,
+			SlideInfo,
+			{Position = UDim2.new(1, 0, 0.025, 0)}
+		):Play()
+	end
+end
+
+--// Hides all Pages from the UI
+local function HideAllPages(Pages : Folder, IgnoredPage : string)
+	--// Get and Hide Pages
+	for _, Page in ipairs(Pages:GetChildren()) do
+		if Page:IsA("Frame") and Page.Name ~= IgnoredPage then
+			--// Generate Tween
+			TS:Create(Page, SlideInfo, {Position = UDim2.new(1, 0, 0.025, 0)}):Play()
+		end
+	end
+end
+
+--// Switches the UI's Page
+local function SwitchPage(Page : Frame)
+	--// Hide all Pages
+	HideAllPages(Page.Parent, Page.Name)
+	ToggleHomePage(false)
+	
+	--// Tween Page
+	TS:Create(
+		Page,
+		SlideInfo,
+		{Position = UDim2.new(0.025, 0, 0.025, 0)}
+	):Play()
+end
 
 --// Loads all Dependencies of the Module
 local function Load_Dependencies(Client)
@@ -102,7 +171,7 @@ return function(Client)
 			
 			--// Get Nexus VR Core
 			Client.VR.Init_NexusVRCore()
-
+			
 			--// Initiate Dependencies
 			Load_Dependencies(Client)
 			
@@ -163,13 +232,13 @@ return function(Client)
 			end
 			
 			--// Check if the Normal Interface should be used
-			if not Client.Config.Enable_NexusVR_Compat then
+			if not Client.Config.VR_Compatibility then
 				Client.UI.HookVRIcon(VR.TopbarPlus_Availible, VR_Button)
 				
 			else
 				VR:Print("Waiting for NexusVRCore...")
 				--// Wait for Core - Incase the Device is slow
-				repeat task.wait(1) until VR.NexusVR_Core ~= nil
+				repeat task.wait(1) until NexusVRCore ~= nil
 				
 				--// Set Button
 				VR.Interface.Button = VR_Button
@@ -182,22 +251,179 @@ return function(Client)
 		
 		--// Initiates the Interface for VR Users
 		Init_Interface = function()
-			if not Client.Config.Enable_NexusVR_Compat then return end
+			if not Client.Config.VR_Compatibility then return end
+			VR:Print("Initialiting Interface...")
+			
+			--// locals
+			--// Client Resources
+			local Shared = Client.Shared
+			local VRShared = Shared:WaitForChild("VR")
+			local Templates = VRShared:WaitForChild("Templates")
+			
+			--// Templates
+			local ButtonTemplate = Templates:WaitForChild("TemplateButton") :: TextButton
+			local PageTemplate = Templates:WaitForChild("PageTemplate") :: Frame
+			
+			--// NexusVRCore Resources
+			local ScreenGui = NexusVRCore:GetResource("Container.ScreenGui")
+			
+			
+			
+			-- Generate SurfaceGui --
+			
+			--// Generate ScreenGui
+			local VRInterface = ScreenGui.new()
+			VRInterface.Name = "OspryQC_VR"
+			VRInterface.Easing = 0.2
+			VRInterface.Parent = PlayerGui
+			VR.Interface.Gui_Interface = VRInterface
+			
+			--// Get UI and Setup
+			local Interface_Container = VRShared:WaitForChild("Container"):Clone()
+			VR.Interface.UIScale = Interface_Container:WaitForChild("UIScale")
+			VR.Interface.UIScale.Scale = 0
+			Interface_Container.Parent = VR.Interface.Gui_Interface:GetContainer()
+			
+			
+			
+			-- Connections --
+			
+			--// Connect Icon
+			if VR.TopbarPlus_Availible then
+				VR.Interface.Button.toggled:Connect(function()
+					if VR.Menu_Shown then
+						TS:Create(VR.Interface.UIScale, MenuInfo, {Scale = 0}):Play()
+						VR.Menu_Shown = false
+						
+					else
+						TS:Create(VR.Interface.UIScale, MenuInfo, {Scale = 1}):Play()
+						VR.Menu_Shown = true
+					end
+				end)
+				
+			else
+				VR.Interface.Button.MouseButton1Click:Connect(function()
+					if VR.Menu_Shown then
+						TS:Create(VR.Interface.UIScale, MenuInfo, {Scale = 0}):Play()
+						VR.Menu_Shown = false
+
+					else
+						TS:Create(VR.Interface.UIScale, MenuInfo, {Scale = 1}):Play()
+						VR.Menu_Shown = true
+					end
+				end)
+			end
+			
+			--// Complete
+			VR:Print("Interface initialized.")
 		end,
 		
 		
 		
 		--// Generates the VR-Side of Phrases
 		CreatePhrases = function(Table)
+			VR:Print("Generating Categorys and Phrases...")
+			
 			--// locals
+			--// Client Resources
+			local Shared = Client.Shared
+			local VRShared = Shared:WaitForChild("VR")
+			local Templates = VRShared:WaitForChild("Templates")
 			local Phrases = Table
+			
+			--// Templates
+			local ButtonTemplate = Templates:WaitForChild("TemplateButton") :: TextButton
+			local PageTemplate = Templates:WaitForChild("PageTemplate") :: Frame
+			
+			--// Interface
+			local Container = VR.Interface.Gui_Interface:GetContainer()
+			local Frame = Container:WaitForChild("Container")
+			local Pages = Frame:WaitForChild("Pages")
+			local Home = Frame:WaitForChild("Home")
+			
+			
+			
+			--// Create Categories
+			for catName, phraseMap in pairs(Phrases) do
+				--// Create Button
+				local CategoryButton = ButtonTemplate:Clone()
+				CategoryButton.Name = catName
+				CategoryButton.Text = catName
+				CategoryButton.Parent = Home:WaitForChild("Options")
+				
+				--// Category Page
+				local CategoryPage = PageTemplate:Clone()
+				CategoryPage.Name = catName
+				CategoryPage.CatName.Text = catName
+				CategoryPage.Parent = Pages
+				
+				--// Elements
+				local BottomBar = CategoryPage:WaitForChild("BottomBar")
+				local ReturnButton = BottomBar:WaitForChild("ReturnButton")
+				local PhraseSelection = CategoryPage:WaitForChild("Phrases")
+				
+				--// Get Phrases
+				for phraseId, data in pairs(phraseMap) do
+					--// Create a new Button
+					local Button = ButtonTemplate:Clone()
+					Button.Text = data.Text
+					Button.Parent = PhraseSelection
+					
+					--// Connect
+					Button.MouseButton1Click:Connect(function()
+						if Client.Debounce then return end
+						Client.Debounce = true
+						
+						--// locals
+						local phraseText = data.Text
+						local args = {}
+
+						--// Find Arguments
+						for argName in phraseText:gmatch("{(.-)}") do
+							table.insert(args, argName)
+						end
+
+						--// Send if no Arguments were found
+						if #args == 0 then
+							Client.Send(phraseText, {})
+							return
+						end
+
+						--// Fill Tables
+						Client.SelectedPhrase = phraseText
+						Client.PendingArgs = {}
+						Client.RequiredArgs = args
+
+						Client:ProcessArguments()
+					end)
+				end
+				
+				
+				
+				-- Connections --
+				
+				--// Connects the Category Button to its Category
+				CategoryButton.MouseButton1Click:Connect(function()
+					--// Switch to Category
+					SwitchPage(CategoryPage)
+				end)
+				
+				--// Connects the Return Button to the Home Page
+				ReturnButton.MouseButton1Click:Connect(function()
+					HideAllPages(Pages, "N/A")
+					ToggleHomePage(true)
+				end)
+			end
+			
+			--// Complete
+			VR:Print("Phrases and Categorys generated?")
 		end,
 		
 		
 		
 		--// Initiates functionality for NexusVRCore.
 		Init_NexusVRCore = function()
-			if not Client.Config.Enable_NexusVR_Compat then return end
+			if not Client.Config.VR_Compatibility then return end
 			
 			--// Check what Core should be used
 			if Client.Config.Use_NexusVR_Inbuild_Core then

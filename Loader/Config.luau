@@ -5,8 +5,8 @@ return {
 	Path_To_TopbarPlus = game.ReplicatedStorage.Icon, -- The Path to the "Icon" Module of TopbarPlus
 	
 	--// VR Integration (Requires Nexus VR Core, https://github.com/TheNexusAvenger/Nexus-VR-Core/tree/master)
-	Enable_NexusVR_Compat = true, -- Allows better VR Compatiblity by using Nexus VR Core (EXPERIMENTAL)
-	Use_NexusVR_Inbuild_Core = true, -- Uses the inbuild NexusVRCore Module from Nexus VR Character Module (Deprecated)
+	VR_Compatibility = false, -- Allows better VR Compatiblity by using Nexus VR Core (EXPERIMENTAL)
+	Use_NexusVR_Inbuild_Core = false, -- Uses the inbuild NexusVRCore Module from Nexus VR Character Module (Deprecated)
 	Path_To_NexusVRCore = nil, -- The Path to NexusVRCore (Not required if Use_NexusVR_Inbuild_Core is set to true)
 	
 	--// VRBottomBar Integration, can be used with TopbarPlus (Recomended) or without

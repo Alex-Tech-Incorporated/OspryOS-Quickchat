@@ -62,7 +62,7 @@ return function (QCClient)
 		CreateButton = function()
 			
 			--// Check if Player is in VR
-			if UIS.VREnabled and QCClient.Config.Enable_VRBottomBar or QCClient.Config.Enable_NexusVR_Compat then
+			if UIS.VREnabled and QCClient.Config.Enable_VRBottomBar or UIS.VREnabled and QCClient.Config.VR_Compatibility then
 				--// Notice
 				print("[QC Interface]: VR User detected, loading VR Interface...")
 				
@@ -131,52 +131,6 @@ return function (QCClient)
 			end
 		end,
 		
-		--// Hooks the VR Icon to the regular Interface
-		HookVRIcon = function(Used_Topbar, Icon)
-			--// locals
-			local Menu = nil
-			local Info = TweenInfo.new(
-				0.75,
-				Enum.EasingStyle.Exponential
-			)
-			
-			--// Connect Button
-			if Used_Topbar then
-				Icon.toggled:Connect(function()
-					if Sys.MenuShown then
-						--// Menu
-						TS:Create(Menu.Background, Info, {Position = Positions.Background.Hidden}):Play()
-						Sys.MenuShown = false
-
-					else
-						--// Menu
-						TS:Create(Menu.Background, Info, {Position = Positions.Background.Shown}):Play()
-						Sys.MenuShown = true
-					end
-				end)
-				
-			else
-				Icon.MouseButton1Click:Connect(function()
-					if Sys.MenuShown then
-						--// Menu
-						TS:Create(Menu.Background, Info, {Position = Positions.Background.Hidden}):Play()
-						Sys.MenuShown = false
-
-					else
-						--// Menu
-						TS:Create(Menu.Background, Info, {Position = Positions.Background.Shown}):Play()
-						Sys.MenuShown = true
-					end
-				end)
-			end
-
-			--// Set local
-			task.spawn(function()
-				Menu = PlayerGui:WaitForChild("OspryQC_Menu")
-				print("[QC Interface]: VR Icon hooked!")
-			end)
-		end,
-		
 		
 		
 		--// Generates the Quickchat Interface
@@ -185,7 +139,7 @@ return function (QCClient)
 
 			--// Check if Shared exists
 			if QCClient.Shared then
-				if UIS.VREnabled and QCClient.Config.Enable_NexusVR_Compat then return end
+				if UIS.VREnabled and QCClient.Config.VR_Compatibility then return end
 				
 				--// locals
 				local UI = Shared:WaitForChild("UI")
@@ -315,7 +269,7 @@ return function (QCClient)
 			
 			
 			--// Check UserInputService
-			if UIS.VREnabled and QCClient.Config.Enable_NexusVR_Compat then
+			if UIS.VREnabled and QCClient.Config.VR_Compatibility then
 				--// Initate Phrases for VR Interface
 				QCClient.VR.CreatePhrases(PhraseRoot)
 				
@@ -328,7 +282,7 @@ return function (QCClient)
 				
 				--// Debug Prints
 				QCClient:Debug("Creating Categorys and Phrases...")
-
+				
 				--// Generate Categorys
 				for categoryName, phraseMap in pairs(PhraseRoot) do
 					--// Generate Category Button
@@ -530,6 +484,56 @@ return function (QCClient)
 				--// Reset Debounce
 				task.wait(QCClient.Config.Chat_Cooldown)
 				QCClient.Debounce = false
+			end)
+		end,
+		
+		
+		
+		-- functions used by Client VR Core --
+		
+		--// Hooks the VR Icon to the regular Interface
+		HookVRIcon = function(Used_Topbar, Icon)
+			--// locals
+			local Menu = nil
+			local Info = TweenInfo.new(
+				0.75,
+				Enum.EasingStyle.Exponential
+			)
+
+			--// Connect Button
+			if Used_Topbar then
+				Icon.toggled:Connect(function()
+					if Sys.MenuShown then
+						--// Menu
+						TS:Create(Menu.Background, Info, {Position = Positions.Background.Hidden}):Play()
+						Sys.MenuShown = false
+
+					else
+						--// Menu
+						TS:Create(Menu.Background, Info, {Position = Positions.Background.Shown}):Play()
+						Sys.MenuShown = true
+					end
+				end)
+
+			else
+				Icon.MouseButton1Click:Connect(function()
+					if Sys.MenuShown then
+						--// Menu
+						TS:Create(Menu.Background, Info, {Position = Positions.Background.Hidden}):Play()
+						Sys.MenuShown = false
+
+					else
+						--// Menu
+						TS:Create(Menu.Background, Info, {Position = Positions.Background.Shown}):Play()
+						Sys.MenuShown = true
+					end
+				end)
+			end
+
+			--// Set local
+			task.spawn(function()
+				Menu = PlayerGui:WaitForChild("OspryQC_Menu")
+				print("[QC Interface]: VR Icon hooked!")
 			end)
 		end,
 	}

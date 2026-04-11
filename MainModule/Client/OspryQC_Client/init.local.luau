@@ -21,7 +21,9 @@ local Client = {
 		Path_To_TopbarPlus = nil,
 		
 		--// Nexus VR
-		Enable_NexusVR_Compat = false,
+		VR_Compatibility = false,
+		Use_NexusVR_Inbuild_Core = false,
+		Path_To_NexusVRCore = nil,
 		
 		--// VRBottomBar
 		Enable_VRBottomBar = false,
