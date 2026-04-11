@@ -2,7 +2,7 @@
 A simple and lightweight Quickchat System made for Roblox, with Plugin Support and Nexus VR Core compatibility.
 
 ## Setup
-Download the newest Version of the Loader and place it in ServerScriptService (Recommended)
+Download the newest Version of the Loader and MainModule and place the Loader in ServerScriptService (Recommended)
 ### Requiring the Module (Recommended)
 Download the newest Version of the MainModule and upload it to your Roblox Profile or the Group, then go to Loader > `Config` and replace `MainModule` with the ID if your uploaded MainModule.
 > [!IMPORTANT]
