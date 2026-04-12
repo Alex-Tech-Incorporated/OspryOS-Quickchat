@@ -3,6 +3,11 @@
 return function(OspryQC)
 	return {
 		Init = function(Plugins)
+			--// Generate Folder
+			local Plugins_Shared = Instance.new("Folder")
+			Plugins_Shared.Name = "Plugins"
+			Plugins_Shared.Parent = OspryQC.Shared
+			
 			--// Get Plugins
 			for _, Plugin in pairs(Plugins:GetChildren()) do
 				if Plugin:IsA("ModuleScript") then

@@ -148,11 +148,6 @@ function OspryOS_Quickchat:Init(Plugins)
 		OspryOS_Quickchat.Calls.Init()
 	end)
 	
-	--// Generate Plugins Folder
-	local Plugins_Shared = Instance.new("Folder")
-	Plugins_Shared.Name = "Plugins"
-	Plugins_Shared.Parent = OspryOS_Quickchat.Shared
-	
 	--// Load Plugins
 	OspryOS_Quickchat.Plugins.Init(Plugins)
 	
