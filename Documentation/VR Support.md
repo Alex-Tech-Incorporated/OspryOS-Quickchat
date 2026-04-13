@@ -3,12 +3,16 @@ This part of the Documentation covers VR Support.
 
 ## Dependencies
 If you want to enable VR Compatibility, you need [VR-Bottom-Bar](https://github.com/IITPP-Roblox/VR-Bottom-Bar) and [Nexus VR Core](https://github.com/TheNexusAvenger/Nexus-VR-Core) by [TheNexusAvenger](https://github.com/TheNexusAvenger),
-you can also us the bundled Nexus VR Core in [Nexus VR Character Module](https://github.com/TheNexusAvenger/Nexus-VR-Character-Model)
+you can also us the bundled Nexus VR Core in [Nexus VR Character Module](https://github.com/TheNexusAvenger/Nexus-VR-Character-Model).
 > [!WARNING]
 > The bundled Version of Nexus VR Core within Nexus VR Character Module is deprecated!
 > It is recommended to use a seperate Version of Nexus VR Core.
 
-## Setup
+## Setting up VR-Bottom-Bar
+VR-Bottom-Bar is essential for the Quickchat's VR Support, **without VR-Bottom-Bar, the VR System of the Client will refuse to Initialize.**
+Please read the Documentation Page on how to [Setup VR-Bottom-Bar](https://github.com/Alex-Tech-Incorporated/OspryOS-Quickchat/blob/main/Documentation/VR-Bottom-Bar.md).
+
+## Setting up VR Support
 Go to the Loader's Config and enable `VR_Compatibility` and set `Path_To_NexusVRCore` to the Path to your version of Nexus VR Core.
 If you want to use the bundled version of Nexus VR Core from Nexus VR Character Module set `Use_NexusVR_Inbuild_Core` to `true` **(NOT RECOMMENDED)**
 ```lua
