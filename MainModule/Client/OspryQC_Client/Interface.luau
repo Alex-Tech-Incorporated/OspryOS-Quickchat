@@ -384,6 +384,11 @@ return function (QCClient)
 		
 		--// Displays a Notification for the Player
 		DisplayNotif = function(Message : string)
+			if UIS.VREnabled and QCClient.Config.VR_Compatibility then
+				QCClient.VR.Notify(Message)
+				return
+			end
+			
 			--// Find Notification Template
 			local Template = QCClient.Shared.UI:FindFirstChild("OspryQC_Notif")
 			if not Template then warn("[QC Interface]: Unable to find 'OspryQC_Notif' in", QCClient.Shared.UI:GetFullName()) return end
@@ -414,6 +419,12 @@ return function (QCClient)
 		
 		--// Creates a List based on the Argument found.
 		CreateList = function(argName : string)
+			if UIS.VREnabled and QCClient.Config.VR_Compatibility then
+				QCClient.VR.GenerateList(argName)
+				return
+			end
+			
+			--// Fetch Gui Data
 			local guiData = QCClient.ArgumentTypes[argName]
 			if not guiData then
 				warn("[QC Interface]: '"..tostring(argName).."' is not a valid Argument.")
