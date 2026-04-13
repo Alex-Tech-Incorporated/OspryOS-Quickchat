@@ -38,14 +38,30 @@ local VR = {
 	--// Essentials
 	Fallback_Container = nil, -- Used for VRBottomBar Guis incase something goes wrong
 	Interface = {
+		--// Essential elements
 		Button = nil,
 		Gui_Interface = nil,
 		UIScale = nil,
+		
+		--// List layout elements
+		List = {
+			Title = nil,
+			Options = nil,
+			UIScale = nil,
+		},
+		
+		--// Notification layout elements
+		Notification = {
+			Title = nil,
+			Message = nil,
+			UIScale = nil,
+		},
 	},
 	
 	--// Behavior
 	TopbarPlus_Availible = false,
 	Menu_Shown = false,
+	List_Shown = false,
 }
 
 -- Essentials --
@@ -284,6 +300,20 @@ return function(Client)
 			VR.Interface.UIScale.Scale = 0
 			Interface_Container.Parent = VR.Interface.Gui_Interface:GetContainer()
 			
+			--// Setup List
+			local List_Container = VRShared:WaitForChild("List_Container"):Clone()
+			VR.Interface.List.Title = List_Container:WaitForChild("Title")
+			VR.Interface.List.Options = List_Container:WaitForChild("Options")
+			VR.Interface.List.UIScale = List_Container:WaitForChild("UIScale")
+			List_Container.Parent = VR.Interface.Gui_Interface:GetContainer()
+			
+			--// Setup Notifications
+			local Notif_Container = VRShared:WaitForChild("Notif_Container"):Clone()
+			VR.Interface.Notification.Title = Notif_Container:WaitForChild("Title")
+			VR.Interface.Notification.Message = Notif_Container:WaitForChild("Message")
+			VR.Interface.Notification.UIScale = Notif_Container:WaitForChild("UIScale")
+			Notif_Container.Parent = VR.Interface.Gui_Interface:GetContainer()
+			
 			
 			
 			-- Connections --
@@ -291,10 +321,13 @@ return function(Client)
 			--// Connect Icon
 			if VR.TopbarPlus_Availible then
 				VR.Interface.Button.toggled:Connect(function()
+					if VR.List_Shown then return end
+					
+					--// Check Menu State
 					if VR.Menu_Shown then
 						TS:Create(VR.Interface.UIScale, MenuInfo, {Scale = 0}):Play()
 						VR.Menu_Shown = false
-						
+
 					else
 						TS:Create(VR.Interface.UIScale, MenuInfo, {Scale = 1}):Play()
 						VR.Menu_Shown = true
@@ -303,6 +336,9 @@ return function(Client)
 				
 			else
 				VR.Interface.Button.MouseButton1Click:Connect(function()
+					if VR.List_Shown then return end
+					
+					--// Check Menu State
 					if VR.Menu_Shown then
 						TS:Create(VR.Interface.UIScale, MenuInfo, {Scale = 0}):Play()
 						VR.Menu_Shown = false
@@ -417,6 +453,117 @@ return function(Client)
 			
 			--// Complete
 			VR:Print("Phrases and Categorys generated?")
+		end,
+		
+		--// Displays a Notification
+		Notify = function(Message : string, Duration : number)
+			if not Client.Config.VR_Compatibility then return end
+			
+			--// locals
+			local UIScale = VR.Interface.Notification.UIScale
+			local Notif_Text = VR.Interface.Notification.Message
+			local Notif_Duration = Duration or 4
+			
+			--// Tween and set Text
+			Notif_Text.Text = Message
+			TS:Create(UIScale, MenuInfo, {Scale = 1}):Play()
+			task.wait(8)
+			
+			TS:Create(UIScale, MenuInfo, {Scale = 0}):Play()
+		end,
+		
+		
+		
+		--// Generates a List for VR Compatibility
+		GenerateList = function(argName : string)
+			if not Client.Config.VR_Compatibility then return end
+			if VR.List_Shown then return end
+			VR.List_Shown = true
+			
+			--// Fetch Gui Data
+			local guiData = Client.ArgumentTypes[argName]
+			if not guiData then
+				VR:Warn(`"{tostring(argName)}" is not a valid Argument.`)
+				return
+			end
+			
+			--// locals
+			local UIScale = VR.Interface.List.UIScale
+			local Title = VR.Interface.List.Title
+			local List = VR.Interface.List.Options
+			
+			--// Set Elements
+			Title.Text = guiData.Title
+			
+			--// Closes the List
+			local function CloseList()
+				TS:Create(UIScale, MenuInfo, {Scale = 0}):Play()
+				TS:Create(VR.Interface.UIScale, MenuInfo, {Scale = 1}):Play()
+				VR.List_Shown = false
+				
+				--// Clear list
+				task.delay(0.5, function()
+					for _, Text in ipairs(List:GetChildren()) do
+						if Text:IsA("TextButton") then
+							Text:Destroy()
+						end
+					end
+				end)
+			end
+			
+			--// Generate Close Button
+			local CloseButton = Instance.new("TextButton")
+			CloseButton.Size = UDim2.new(0.8, 0, 0, 40)
+			CloseButton.Text = "[CLOSE]"
+			CloseButton.Name = "Close_Button"
+
+			CloseButton.BackgroundTransparency = 1
+			CloseButton.TextStrokeTransparency = 0
+			CloseButton.TextColor3 = Color3.fromRGB(255, 55, 55)
+			CloseButton.Font = Enum.Font.Jura
+			CloseButton.TextScaled = true
+			CloseButton.Parent = List
+			
+			--// Open List
+			TS:Create(VR.Interface.UIScale, MenuInfo, {Scale = 0}):Play()
+			TS:Create(UIScale, MenuInfo, {Scale = 1}):Play()
+			
+			
+			
+			-- Connections --
+			
+			--// Get Data
+			local options = guiData.Populate(Plr)
+			for _, option in pairs(options) do
+				local Button = Instance.new("TextButton")
+				Button.Size = UDim2.new(0.8, 0, 0, 40)
+				Button.Text = tostring(option)
+				Button.Name = "Option_Button"
+
+				--// Edit
+				Button.BackgroundTransparency = 1
+				Button.TextStrokeTransparency = 0
+				Button.TextColor3 = Color3.fromRGB(255, 255, 255)
+				Button.Font = Enum.Font.Jura
+				Button.TextScaled = true
+				Button.Parent = List
+
+				--// Connect
+				Button.MouseButton1Click:Connect(function()
+					Client.PendingArgs[argName] = option
+					CloseList()
+					Client:ProcessArguments()
+				end)
+			end
+			
+			--// CloseButton Connection
+			CloseButton.MouseButton1Click:Connect(function()
+				CloseList()
+
+				--// Reset Debounce
+				task.wait(Client.Config.Chat_Cooldown)
+				Client.Debounce = false
+			end)
 		end,
 		
 		
