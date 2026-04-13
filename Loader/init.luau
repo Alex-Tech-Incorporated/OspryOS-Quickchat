@@ -6,6 +6,9 @@
 	All releases of this System can be found on our Github!
 	https://github.com/Alex-Tech-Incorporated/OspryOS-Quickchat
 	
+	Found a bug? You can report it to our Github.
+	https://github.com/Alex-Tech-Incorporated/OspryOS-Quickchat/issues
+	
 	
 	Only edit the Loader of you know what you are doing!
 --]]
