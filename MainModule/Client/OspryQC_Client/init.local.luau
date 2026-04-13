@@ -264,9 +264,9 @@ Client.Remotes.QuickChat.OnClientEvent:Connect(function(Sender : Player, QCMessa
 end)
 
 --// Notifiction Connection
-Client.Remotes.Notify.OnClientEvent:Connect(function(Message : string)
+Client.Remotes.Notify.OnClientEvent:Connect(function(Message : string, Duration : number)
 	--// Display Message
-	Client.UI.DisplayNotif(Message)
+	Client.UI.DisplayNotif(Message, Duration)
 end)
 
 
@@ -278,6 +278,7 @@ print("[OspryQC Client]: OspryOS Quickchat running on Version", Client.Config.Ve
 --// Welcome Message
 if Client.Config.UI.Welcome_Message then
 	Client.UI.DisplayNotif(
-		"Hello "..Plr.DisplayName.."! OspryOS Quickchat version "..Client.Config.Version.." is running!"
+		"Hello "..Plr.DisplayName.."! OspryOS Quickchat version "..Client.Config.Version.." is running!",
+		6
 	)
 end

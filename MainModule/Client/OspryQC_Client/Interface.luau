@@ -383,11 +383,14 @@ return function (QCClient)
 		end,
 		
 		--// Displays a Notification for the Player
-		DisplayNotif = function(Message : string)
+		DisplayNotif = function(Message : string, Duration : number)
 			if UIS.VREnabled and QCClient.Config.VR_Compatibility then
 				QCClient.VR.Notify(Message)
 				return
 			end
+			
+			--// locals
+			local Notif_Duration = Duration or 4
 			
 			--// Find Notification Template
 			local Template = QCClient.Shared.UI:FindFirstChild("OspryQC_Notif")
@@ -404,7 +407,7 @@ return function (QCClient)
 			TS:Create(Notif.Background.UIStroke, MenuInfo, {Transparency = QCClient.Config.UI.Stroke_Transparency}):Play()
 			TS:Create(Notif.Background, MenuInfo, {Position = UDim2.new(0.744, 0, 0.831, 0)}):Play()
 			
-			task.wait(8)
+			task.wait(Notif_Duration)
 			
 			--// Tween
 			TS:Create(Notif.Background, MenuInfo, {BackgroundTransparency = 1}):Play()
