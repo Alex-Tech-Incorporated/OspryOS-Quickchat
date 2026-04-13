@@ -22,6 +22,7 @@ local LoaderConfig = Container.Config
 
 
 -- Initialize --
+print("[OspryQC Loader]: Loading...")
 Container.Parent = SSS -- Never leave Loaders in workspace, please...
 local Config = require(LoaderConfig)
 local OspryQC
@@ -30,7 +31,7 @@ local OspryQC
 local success, module = pcall(function()
 	return require(
 		if Config.LoadLocally
-			then Container:WaitForChild("MainModule", 60)
+			then Container:WaitForChild("MainModule", 30)
 			else Config.MainModule
 	)
 end)
