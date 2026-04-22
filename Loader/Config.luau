@@ -20,6 +20,15 @@ return {
 	
 	--// Phrases
 	Phrases = {
+		-- REMOVE THIS AFTER TESTING! YOU RISK YOUR GAME BEING TERMINATED IF NOT!
+		["EXAMPLES"] = {
+			HelloPlayer = {Text = "Hello {player}!"},
+			CanYouFollowMe = {Text = "Can you follow me {player}?"},
+			Test1 = {Text = "Test 1"},
+		},
+		
+		-- All of these have been forcefully removed, due to Roblox changing there Policies regarding Quickchat Systems.
+		--[[
 		["Formalities"] = {
 			Hello = {Text = "Hello!"},
 			HelloPlayer = {Text = "Hello {player}!"},
@@ -38,7 +47,7 @@ return {
 			No = {Text = "No"},
 			What = {Text = "What?"},
 			Sure = {Text = "Sure"},
-		},
+		},]]
 	},
 	
 	--// User Interface
@@ -49,7 +58,8 @@ return {
 
 		Background_Color = Color3.fromRGB(0, 0, 0), -- The Color of the Background of the UI
 
-		Use_Formatting = true, -- Makes Quickchat sent Player Messages look allot better
+		Style_Message = true, -- Makes Quickchat sent Player Messages look allot better
+		Message_punctuation = "*", -- Shows at the beginning of a Quickchat Message, showing that is a preset
 		PlayerNameColor = "#0078FF", -- The HEX Code of the Player's Name Color in Chat
 		PlayerMessageColor = "#FFFFFF", -- The HEX Code of the Message Color when using Quickchat
 		
@@ -57,7 +67,7 @@ return {
 	},
 	
 	--// Misc
-	Chat_Cooldown = 2, -- The Chat Cooldown before a Player can send a Quickchat Message again
+	Chat_Cooldown = 10, -- The Chat Cooldown before a Player can send a Quickchat Message again
 	
 	--// Development
 	LoadLocally = true, -- Loads a local version of the MainModule within the Loader

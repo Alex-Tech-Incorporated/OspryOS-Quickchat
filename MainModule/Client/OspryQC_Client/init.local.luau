@@ -38,7 +38,8 @@ local Client = {
 			
 			Background_Color = Color3.fromRGB(0, 0, 0),
 			
-			Use_Formatting = true,
+			Style_Message = true,
+			Message_punctuation = "*",
 			PlayerNameColor = "#FFFFFF",
 			PlayerMessageColor = "#FFFFFF",
 			
@@ -95,17 +96,16 @@ end
 
 --// Formats Text
 local function format(Sender : Player, QCMessage : string)
-	if Client.Config.UI.Use_Formatting then
-		if not Client.Config.UI.Use_Formatting then return end
-
-		--// Format Sender
+	if Client.Config.UI.Style_Message then
+		--// Sender
 		local namePart = string.format(
-			"<font color='%s'>%s:</font>",
+			"<font color='%s'>%s%s:</font>",
 			Client.Config.UI.PlayerNameColor,
+			Client.Config.UI.Message_punctuation,
 			Sender.Name
 		)
 
-		--// Format Message
+		--// Message
 		local messagePart = string.format(
 			"<font color='%s'> %s</font>",
 			Client.Config.UI.PlayerMessageColor,
@@ -118,11 +118,13 @@ local function format(Sender : Player, QCMessage : string)
 	else
 		--// Generate Regular Template
 		local Message = string.format(
-			"%s: %s",
+			"%s%s: %s",
+			Client.Config.UI.Message_punctuation,
 			Sender.Name,
 			QCMessage
 		)
 		
+		--// Export
 		return Message
 	end
 end

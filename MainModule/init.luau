@@ -176,16 +176,22 @@ function OspryOS_Quickchat:Init(Plugins)
 		end
 		
 		--// Convert Arguments or leave Phrase as is
-		local FinalMessage = Phrase
+		local ProcessedMessage = Phrase
 		for argName, argValue in pairs(ArgTable) do
-			FinalMessage = FinalMessage:gsub("{"..argName.."}", argValue)
+			ProcessedMessage = ProcessedMessage:gsub("{"..argName.."}", argValue)
 		end
 		
 		--// Filter
-		-- TODO: Add Filtering via TextService
+		local TextServiceResult = TextService:FilterStringAsync(
+			ProcessedMessage,
+			Plr.UserId,
+			Enum.TextFilterContext.PublicChat
+		)
+		
+		local FilteredMessage = TextServiceResult:GetNonChatStringForBroadcastAsync()
 
 		--// Send to Clients
-		OspryOS_Quickchat.Remotes.QuickChat:FireAllClients(Plr, FinalMessage)
+		OspryOS_Quickchat.Remotes.QuickChat:FireAllClients(Plr, FilteredMessage)
 	end)
 	
 	--// Export Result
