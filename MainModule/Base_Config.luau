@@ -15,22 +15,31 @@ return {
 	Technified_Compat = false,
 	
 	Phrases = {
+		["Default (Fallback)"] = {
+			Fallback = {Text = "Fallback"},
+		},
+		
+		-- All of these have been forcefully removed, due to Roblox changing there Policies regarding Quickchat Systems.
+		--[[
 		["Formalities"] = {
 			Hello = {Text = "Hello!"},
+			HelloPlayer = {Text = "Hello {player}!"},
+			Hi = {Text = "Hi"},
 
 			Bye = {Text = "Bye!"},
 			ByePlayer = {Text = "Bye, {player}!"},
 		},
-
+		
 		["Requests"] = {
 			CanYouFollowMe = {Text = "Can you follow me {player}?"},
 		},
-
+		
 		["Answers"] = {
 			Yes = {Text = "Yes"},
 			No = {Text = "No"},
 			What = {Text = "What?"},
-		}
+			Sure = {Text = "Sure"},
+		},]]
 	},
 	
 	UI = {
@@ -40,19 +49,20 @@ return {
 		
 		Background_Color = Color3.fromRGB(140, 0, 140),
 		
-		Use_Formatting = true,
+		Style_Message = true,
+		Message_punctuation = "*",
 		PlayerNameColor = "#FFFFFF",
 		PlayerMessageColor = "#FFFFFF",
 		
 		Welcome_Message = true,
 	},
 	
-	Chat_Cooldown = 2,
+	Chat_Cooldown = 10,
 	
 	DebugMode = false,
 	
 	
 	
 	--// System Specific
-	Version = "1.2.1",
+	Version = "1.2.2",
 }

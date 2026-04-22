@@ -51,6 +51,29 @@ local Sys = {
 }
 
 
+
+-- Internal functions --
+
+--// Generates a Return Button for a Page
+local function CreateCloseBtn()
+	--// Generate
+	local CloseBtn = Instance.new("TextButton")
+	CloseBtn.Size = UDim2.new(0.8, 0, 0, 40)
+	CloseBtn.Text = "[CLOSE]"
+	CloseBtn.Name = "Close_Button"
+
+	CloseBtn.BackgroundTransparency = 1
+	CloseBtn.TextStrokeTransparency = 0
+	CloseBtn.TextColor3 = Color3.fromRGB(255, 55, 55)
+	CloseBtn.Font = Enum.Font.Jura
+	CloseBtn.TextScaled = true
+	
+	--// Export
+	return CloseBtn
+end
+
+
+
 --// Export
 return function (QCClient)
 	--// locals
@@ -252,7 +275,6 @@ return function (QCClient)
 
 				QCClient:Debug("Client Interface generated.")
 			else
-				QCClient.UI.DisplayNotif("Client Shared could not be found, the Client will not be functional.")
 				error("[QC Interface]: Unable to find '__OspryQC_Shared' in ReplicatedStorage, the Client will not be functional.")
 			end
 		end,
@@ -306,7 +328,8 @@ return function (QCClient)
 						local Button = Templates.TemplateButton:Clone() :: TextButton
 						Button.Text = data.Text
 						Button.Parent = Selection
-
+						
+						--// Connection
 						Button.MouseButton1Click:Connect(function()
 							if QCClient.Debounce then return end
 							QCClient.Debounce = true
@@ -455,16 +478,7 @@ return function (QCClient)
 			end
 			
 			--// Generate Close Button
-			local CloseButton = Instance.new("TextButton")
-			CloseButton.Size = UDim2.new(0.8, 0, 0, 40)
-			CloseButton.Text = "[CLOSE]"
-			CloseButton.Name = "Close_Button"
-
-			CloseButton.BackgroundTransparency = 1
-			CloseButton.TextStrokeTransparency = 0
-			CloseButton.TextColor3 = Color3.fromRGB(255, 55, 55)
-			CloseButton.Font = Enum.Font.Jura
-			CloseButton.TextScaled = true
+			local CloseButton = CreateCloseBtn()
 			CloseButton.Parent = List
 			
 			--// Populate List
