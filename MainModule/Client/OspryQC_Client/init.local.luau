@@ -261,7 +261,13 @@ Client.Remotes.QuickChat.OnClientEvent:Connect(function(Sender : Player, QCMessa
 	)
 	
 	--// Chat Bubble
-	TextChatService:DisplayBubble(Sender.Character, QCMessage)
+	TextChatService:DisplayBubble(
+		Sender.Character,
+		string.format("%s%s",
+			Client.Config.UI.Message_punctuation,
+			QCMessage
+		)
+	)
 	Client:Debug("Chat Message recieved from", Sender.Name)
 end)
 
