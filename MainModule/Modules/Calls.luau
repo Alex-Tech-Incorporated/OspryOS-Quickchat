@@ -63,8 +63,8 @@ return function(OspryQC)
 			OspryQC:Debug("Calls Initialized!")
 		end,
 		
-		--// Checks if a Player is Muted by a Support Admin System or the Inbuild Moderation Panel, returns true if Muted
-		CheckMute = function(Plr : Player)
+		--// Checks the _G API of a supported Admin System to see if the Player is muted
+		IsMuted = function(Plr : Player)
 			--// Check if Adonis Compatability is enabled
 			if OspryQC.Config.Adonis_Compat then
 				OspryQC:Debug("Running Check via _G.Adonis...")
@@ -80,24 +80,6 @@ return function(OspryQC)
 				
 				--// Check if Muted
 				return AdonisAPI.IsMuted(Plr)
-			end
-			
-			--// Check if Technified Compatability is enabled
-			if OspryQC.Config.Technified_Compat then
-				--// Check for _G.Technified
-				if not _G.Technified then
-					warn("[OspryOS Quickchat]: _G.Technified was not found, is Technified installed?")
-					return false
-				end	
-				
-				--// Technified Scripting API
-				local IsMuted, Data = _G.Technified.IsMuted(Plr.UserId)
-				
-				--// Check if Muted
-				if IsMuted then
-					OspryQC:Debug(Plr.Name, "has been Muted for", Data)
-					return true
-				end
 			end
 			
 			--// Return false if all other Checks did not return anything

@@ -12,7 +12,6 @@ return {
 	VRBottomBar_Position = 1,
 	
 	Adonis_Compat = false,
-	Technified_Compat = false,
 	
 	Phrases = {
 		["Default (Fallback)"] = {
