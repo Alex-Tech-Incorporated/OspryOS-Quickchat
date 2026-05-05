@@ -331,7 +331,14 @@ return function (QCClient)
 						
 						--// Connection
 						Button.MouseButton1Click:Connect(function()
-							if QCClient.Debounce then return end
+							if QCClient.Debounce then
+								--// Display Notification
+								QCClient.UI.DisplayNotif(
+									"Please wait before sending another Message!",
+									6
+								)
+								return
+							end
 							QCClient.Debounce = true
 
 							--// locals
