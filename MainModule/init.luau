@@ -161,7 +161,7 @@ function OspryOS_Quickchat:Init(Plugins)
 		OspryOS_Quickchat:Debug("Server request recieved by", Plr.Name)
 		
 		--// Check if Player is muted
-		if OspryOS_Quickchat.Calls.CheckMute(Plr) then
+		if OspryOS_Quickchat.Calls.IsMuted(Plr) then
 			OspryOS_Quickchat:Debug(Plr.Name, "is Muted, request cancelled.")
 			OspryOS_Quickchat.Remotes.Notify:FireClient(Plr, "You are currently Muted and unable to use Quickchat.", 6)
 			return

@@ -467,7 +467,7 @@ return function(Client)
 			--// Tween and set Text
 			Notif_Text.Text = Message
 			TS:Create(UIScale, MenuInfo, {Scale = 1}):Play()
-			task.wait(8)
+			task.wait(Notif_Duration)
 			
 			TS:Create(UIScale, MenuInfo, {Scale = 0}):Play()
 		end,

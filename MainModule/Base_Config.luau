@@ -12,7 +12,6 @@ return {
 	VRBottomBar_Position = 1,
 	
 	Adonis_Compat = false,
-	Technified_Compat = false,
 	
 	Phrases = {
 		["Default (Fallback)"] = {
@@ -64,5 +63,5 @@ return {
 	
 	
 	--// System Specific
-	Version = "1.2.2",
+	Version = "1.2.3",
 }

@@ -11,7 +11,10 @@
 	
 	
 	Only edit the Loader of you know what you are doing!
+	OspryOS Quickchat is availible under the Terms of the MIT License.
 --]]
+
+
 
 --// locals
 --// Services
@@ -19,23 +22,36 @@ local SSS = game:GetService("ServerScriptService")
 
 --// Loader Components
 local Container = script
-local Plugins = Container:WaitForChild("Plugins")
 local LoaderConfig = Container.Config
+
+--// MainModule
+local OspryQC
+
+--// Loader Table
+local Loader = {
+	Config = require(LoaderConfig),
+	Plugins = Container:WaitForChild("Plugins"),
+}
+
+function Loader:print(...)
+	print("[OspryQC Loader]:", ...)
+end
+function Loader:warn(...)
+	warn("[OspryQC Loader]:", ...)
+end
 
 
 
 -- Initialize --
-print("[OspryQC Loader]: Loading...")
+Loader:print("Loading...")
 Container.Parent = SSS -- Never leave Loaders in workspace, please...
-local Config = require(LoaderConfig)
-local OspryQC
 
 --// Check if MainModule is availible
 local success, module = pcall(function()
 	return require(
-		if Config.LoadLocally
+		if Loader.Config.LoadLocally
 			then Container:WaitForChild("MainModule", 30)
-			else Config.MainModule
+			else Loader.Config.MainModule
 	)
 end)
 
@@ -44,22 +60,23 @@ if success then
 	OspryQC = module
 	
 else
-	warn("[OspryQC Loader]: MainModule is not availible at this time.")
+	Loader:warn("MainModule has failed to require.")
 	return
 end
 
 --// Set up QuickChat Settings
-OspryQC:OverwriteConfig(Config)
+OspryQC:OverwriteConfig(Loader.Config)
 
 
 
---// Bootup MainModule
-local loaded, response = OspryQC:Init(Plugins)
+-- Initialize MainModule --
+local loaded, response = OspryQC:Init(Loader.Plugins)
 
+--// Check if MainModule loaded
 if loaded then
-	print(`[OspryQC Loader]: {response}`)
+	Loader:print(`{response}`)
 	
 else
-	warn("[OspryQC Loader]: Failed to Initialize MainModule:")
-	warn(`[OspryQC Loader]: {response}`)
+	Loader:warn(`Failed to initialize MainModule.`)
+	Loader:warn(`{response}`)
 end

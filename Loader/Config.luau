@@ -16,7 +16,6 @@ return {
 	
 	--// Admin System Compatability
 	Adonis_Compat = false, -- Enables Integration with the Adonis ;mute command via Adonis's _G API, make sure G_API is set to true!
-	Technified_Compat = false, -- Enables Integration with Technified's In-game Admin Client to allow Mutes to work with Quickchat
 	
 	--// Phrases
 	Phrases = {

@@ -46,7 +46,7 @@ local Client = {
 			Welcome_Message = true,
 		},
 		
-		Chat_Cooldown = 2,
+		Chat_Cooldown = 10,
 
 		DebugMode = false,
 		
@@ -63,7 +63,6 @@ local Client = {
 	Shared = RS:FindFirstChild("__OspryQC_Shared"),
 	
 	Remotes = RS:WaitForChild("__OspryQC_Shared"):FindFirstChild("Remotes"),
-	Plugins = RS:WaitForChild("__OspryQC_Shared"):FindFirstChild("Plugins"),
 	Phrases = RS:WaitForChild("__OspryQC_Shared"):FindFirstChild("Remotes"):FindFirstChild("get_Phrases"):InvokeServer(),
 	
 	--// Misc
@@ -76,6 +75,7 @@ local Client = {
 --// Client Modules
 Client.UI = require(script.Interface)(Client)
 Client.VR = require(script.VR)(Client)
+Client.Plugins = require(script.Plugins)(Client)
 
 --// Misc
 local SlideInfo = TweenInfo.new(
@@ -156,7 +156,7 @@ function Client:Init()
 	Client.UI.CreatePhrases()
 
 	-- Initialize Plugins --
-	Client:LoadPLugins()
+	Client.Plugins.LoadPlugins()
 end
 
 --// Sets up the Client
@@ -185,29 +185,6 @@ end
 
 
 -- Plugin Support --
-
---// Loads Plugins
-function Client:LoadPLugins()
-	local Plugins = Client.Shared:FindFirstChild("Plugins")
-	if not Plugins then
-		warn("[OspryQC Client]: Unable to find Plugins Folder within"..Client.Shared:GetFullName()..", skipped!")
-		return
-	end
-	print("[OspryQC Client]: Loading Plugins...")
-	
-	--// Load Plugins
-	for _, module in ipairs(Plugins:GetChildren()) do
-		if module:IsA("ModuleScript") then
-			local success, plugin = pcall(require, module)
-			if success and plugin.argName and plugin.Arguments then
-				Client:RegisterArgument(plugin.argName, plugin.Arguments.Gui)
-				
-			else
-				warn("[OspryQC Client]: "..module.Name.." Plugin failed to Initialize!")
-			end
-		end
-	end
-end
 
 --// Registers an Argument Tpye via Plugins
 function Client:RegisterArgument(argName : string, guiData)
@@ -261,7 +238,13 @@ Client.Remotes.QuickChat.OnClientEvent:Connect(function(Sender : Player, QCMessa
 	)
 	
 	--// Chat Bubble
-	TextChatService:DisplayBubble(Sender.Character, QCMessage)
+	TextChatService:DisplayBubble(
+		Sender.Character,
+		string.format("%s%s",
+			Client.Config.UI.Message_punctuation,
+			QCMessage
+		)
+	)
 	Client:Debug("Chat Message recieved from", Sender.Name)
 end)
 
