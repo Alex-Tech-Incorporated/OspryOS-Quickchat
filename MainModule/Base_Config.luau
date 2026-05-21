@@ -1,6 +1,7 @@
 return {
 	
 	Enable_TopbarPlus = false,
+	Topbar_Icon_Keybind = Enum.KeyCode.Comma,
 	Path_To_TopbarPlus = nil,
 	
 	VR_Compatibility = false,
@@ -63,5 +64,5 @@ return {
 	
 	
 	--// System Specific
-	Version = "1.2.3",
+	Version = "1.2.4",
 }

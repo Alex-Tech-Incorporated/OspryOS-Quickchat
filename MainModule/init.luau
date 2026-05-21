@@ -118,6 +118,15 @@ function OspryOS_Quickchat:FindPhraseData(Text : string)
 	return nil
 end
 
+--// Sends a Notification to a Player
+function OspryOS_Quickchat:Notify(Plr : Player, Message : string, Duration : number)
+	OspryOS_Quickchat.Remotes.Notify:FireClient(
+		Plr,
+		Message,
+		Duration
+	)
+end
+
 
 
 --// Initiates the Quickchat Module
@@ -163,7 +172,7 @@ function OspryOS_Quickchat:Init(Plugins)
 		--// Check if Player is muted
 		if OspryOS_Quickchat.Calls.IsMuted(Plr) then
 			OspryOS_Quickchat:Debug(Plr.Name, "is Muted, request cancelled.")
-			OspryOS_Quickchat.Remotes.Notify:FireClient(Plr, "You are currently Muted and unable to use Quickchat.", 6)
+			OspryOS_Quickchat:Notify(Plr, "You are currently Muted and unable to use the Quickchat.", 6)
 			return
 		end
 		
@@ -182,13 +191,30 @@ function OspryOS_Quickchat:Init(Plugins)
 		end
 		
 		--// Filter
-		local TextServiceResult = TextService:FilterStringAsync(
-			ProcessedMessage,
-			Plr.UserId,
-			Enum.TextFilterContext.PublicChat
-		)
+		local success, result = pcall(function()
+			return TextService:FilterStringAsync(
+				ProcessedMessage,
+				Plr.UserId,
+				Enum.TextFilterContext.PublicChat
+			)
+		end)
 		
-		local FilteredMessage = TextServiceResult:GetNonChatStringForBroadcastAsync()
+		--// Check Response
+		if not success then
+			--// Notify Player
+			OspryOS_Quickchat:Notify(
+				Plr,
+				"Something wen't wrong during filtering, please try again later!",
+				4
+			)
+			
+			--// Cancel Request
+			warn("[OspryOS Quickchat]: Something wen't wrong during filtering, got:", result)
+			return
+		end
+		
+		--// Get Filter result
+		local FilteredMessage = result:GetNonChatStringForBroadcastAsync()
 
 		--// Send to Clients
 		OspryOS_Quickchat.Remotes.QuickChat:FireAllClients(Plr, FilteredMessage)

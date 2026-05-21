@@ -2,6 +2,7 @@ return {
 	
 	--// TopbarPlus Integration
 	Enable_TopbarPlus = false, -- Enables TopbarPlus Integration for the Quickchat Menu, replacing the Gui Toggle Button.
+	Topbar_Icon_Keybind = Enum.KeyCode.Comma, -- Binds a Keycode to the Icon of the Quickchat
 	Path_To_TopbarPlus = game.ReplicatedStorage.Icon, -- The Path to the "Icon" Module of TopbarPlus
 	
 	--// VR Integration (Requires Nexus VR Core, https://github.com/TheNexusAvenger/Nexus-VR-Core/tree/master)

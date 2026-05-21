@@ -127,6 +127,7 @@ return function (QCClient)
 						:setLabel("Quickchat")
 						:setImage(125230976591996, "Deselected")
 						:setImage(93549485815803, "Selected")
+						:bindToggleKey(QCClient.Config.Topbar_Icon_Keybind)
 
 					QCClient:Debug("TopbarPlus Icon generated.")
 					
