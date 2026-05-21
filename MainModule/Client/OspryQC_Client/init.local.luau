@@ -18,6 +18,7 @@ local Client = {
 	Config = {
 		--// TopbarPlus
 		Enable_TopbarPlus = false,
+		Topbar_Icon_Keybind = nil,
 		Path_To_TopbarPlus = nil,
 		
 		--// Nexus VR
