@@ -70,15 +70,20 @@ local OspryOS_Quickchat = {
 }
 
 --// Essential Modules
+OspryOS_Quickchat.functions = require(Modules.functions)(OspryOS_Quickchat)
 OspryOS_Quickchat.Plugins = require(Modules.Plugins)(OspryOS_Quickchat)
-OspryOS_Quickchat.Calls = require(Modules.Calls)(OspryOS_Quickchat)
+
+--// Loading Order
+local Loading_Order = {
+	OspryOS_Quickchat.functions,
+}
 
 
 
 -- Internal functions --
 
 --// Generates the RemoteFolder
-local function GenerateRemoteStorage()
+local function GenerateRemotesFolder()
 	local Folder = Instance.new("Folder")
 	Folder.Name = "Remotes"
 	Folder.Parent = OspryOS_Quickchat.Shared
@@ -150,12 +155,12 @@ function OspryOS_Quickchat:Init(Plugins)
 	OspryOS_Quickchat:Debug("Shared has been cloned and placed in ReplicatedStorage.")
 	
 	--// Generate Remotes Folder
-	GenerateRemoteStorage()
+	GenerateRemotesFolder()
 	
 	--// Initiate Modules
-	task.spawn(function()
-		OspryOS_Quickchat.Calls.Init()
-	end)
+	for _, module in pairs(Loading_Order) do
+		module.Init()
+	end
 	
 	--// Load Plugins
 	OspryOS_Quickchat.Plugins.Init(Plugins)
@@ -170,7 +175,7 @@ function OspryOS_Quickchat:Init(Plugins)
 		OspryOS_Quickchat:Debug("Server request recieved by", Plr.Name)
 		
 		--// Check if Player is muted
-		if OspryOS_Quickchat.Calls.IsMuted(Plr) then
+		if OspryOS_Quickchat.functions.IsMuted(Plr) then
 			OspryOS_Quickchat:Debug(Plr.Name, "is Muted, request cancelled.")
 			OspryOS_Quickchat:Notify(Plr, "You are currently Muted and unable to use the Quickchat.", 6)
 			return
@@ -179,8 +184,11 @@ function OspryOS_Quickchat:Init(Plugins)
 		--// Check if Phrase is Valid
 		local data = OspryOS_Quickchat:FindPhraseData(Phrase)
 		if not data then
-			warn("[OspryOS Quickchat]: "..Plr.Name.." attempted to send an Invalid Phrase to the Server.")
-			Plr:Kick("[OspryOS Quickchat]\n\nAn Invalid Phrase has been sent to the Server via Quickchat RemoteEvent.")
+			warn(`[OspryOS Quickchat]: {Plr.Name} has sent an invalid Phrase to the Server`)
+			Plr:Kick(
+				"[OspryOS Quickchat]"
+				.."\nAn Invalid Phrase has been sent to the Server from your Client, please rejoin."
+			)
 			return
 		end
 		
@@ -221,7 +229,7 @@ function OspryOS_Quickchat:Init(Plugins)
 	end)
 	
 	--// Export Result
-	return true, "OspryOS Quickchat "..OspryOS_Quickchat.Config.Version.."-Server running."
+	return true, `OspryOS Quickchat v{OspryOS_Quickchat.Config.Version}-Server initialized.`
 end
 
 --// Export
