@@ -3,7 +3,7 @@ return {
 	--// TopbarPlus Integration
 	Enable_TopbarPlus = false, -- Enables TopbarPlus Integration for the Quickchat Menu, replacing the Gui Toggle Button.
 	Topbar_Icon_Keybind = Enum.KeyCode.Comma, -- Binds a Keycode to the Icon of the Quickchat
-	Path_To_TopbarPlus = game.ReplicatedStorage.Icon, -- The Path to the "Icon" Module of TopbarPlus
+	Path_To_TopbarPlus = nil, -- The Path to the "Icon" Module of TopbarPlus
 	
 	--// VR Integration (Requires Nexus VR Core, https://github.com/TheNexusAvenger/Nexus-VR-Core/tree/master)
 	VR_Compatibility = false, -- Allows better VR Compatiblity by using Nexus VR Core (EXPERIMENTAL)
@@ -12,7 +12,7 @@ return {
 	
 	--// VRBottomBar Integration, can be used with TopbarPlus (Recomended) or without
 	Enable_VRBottomBar = false, -- Enables Compatibility for "VRBottomBar", made by TheNexusAvenger. (https://github.com/IITPP-Roblox/VR-Bottom-Bar)
-	Path_To_VRBottomBar = game.ReplicatedStorage.VRBottomBar, -- The Path to the "VRBottomBar" Module
+	Path_To_VRBottomBar = nil, -- The Path to the "VRBottomBar" Module
 	VRBottomBar_Position = 1, -- The Position of the Button for Bottom Bar
 	
 	--// Admin System Compatability
