@@ -1,2 +1,11 @@
-# ignore README
-README.md
+# VS Code files
+.vscode/*
+
+# Roblox files
+*.rbxlx
+*.rbxmx
+*.rbxm
+*.rbxl
+
+# Rojo sourcemaps
+sourcemap.json
