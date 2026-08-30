@@ -1,4 +1,4 @@
--- OspryOS Quickchat Calls Module --
+-- OspryOS Quickchat functions --
 
 --// locals
 --// Services
@@ -10,80 +10,54 @@ return function(OspryQC)
 	
 	return {
 		Init = function()
-			--// The Main Quickchat RemoteEvent, Parsing both Client and Server Requests
-			local QuickChatEvent = Instance.new("RemoteEvent") :: RemoteEvent
-			QuickChatEvent.Name = "QuickChat"
-			QuickChatEvent.Parent = OspryQC.Remotes
+			--// Clone Client
+			local Cloned_Client = OspryQC.Client.OspryQC_Client_V2:Clone()
+			Cloned_Client.Parent = game:GetService("ReplicatedStorage")
 			
-			--// Notification RemoteEvent
-			local NotifyEvent = Instance.new("RemoteEvent")
-			NotifyEvent.Name = "Notify"
-			NotifyEvent.Parent = OspryQC.Remotes
-			
-			--// RemoteFunction to return the Config to the Client
-			local get_Config = Instance.new("RemoteFunction") :: RemoteFunction
-			get_Config.Name = "get_Config"
-			get_Config.Parent = OspryQC.Remotes
-			
-			--// RemoteFunction to return the Phrases to the Client
-			local get_Phrases = Instance.new("RemoteFunction") :: RemoteFunction
-			get_Phrases.Name = "get_Phrases"
-			get_Phrases.Parent = OspryQC.Remotes
-			
-			
-			
-			--// Add get_Config Call
-			get_Config.OnServerInvoke = function()
-				return OspryQC.Config -- Export
-			end
-			
-			--// Add get_Phrases Call
-			get_Phrases.OnServerInvoke = function()
-				--// Phrase Essentials
-				local PhraseEssentials = {
-					OspryQC.Config.Phrases
-				}
+			--// Player Connections
+			Players.PlayerRemoving:Connect(function(Plr : Player)
+				OspryQC:debug(`Player leaving, {Plr.Name}`)
 				
-				--// Export
-				return PhraseEssentials
-			end
-			
-			
-			
-			--// Player Added Connection
-			Players.PlayerAdded:Connect(function(Plr : Player)
-				OspryQC:Debug("Loading Player,", Plr.Name)
-				
-				--// Insert Client Script
-				local OspryQC_Client = Client.OspryQC_Client:Clone()
-				OspryQC_Client.Parent = Plr:WaitForChild("PlayerGui")
-				OspryQC_Client.Enabled = true
+				--// Delete Client Status
+				OspryQC.Remote.Client_Status[Plr.UserId] = nil
 			end)
 			
-			OspryQC:Debug("functions Initialized.")
+			OspryQC:debug("functions Initialized.")
 		end,
 		
 		--// Checks the _G API of a supported Admin System to see if the Player is muted
 		IsMuted = function(Plr : Player)
 			--// Check if Adonis Compatability is enabled
 			if OspryQC.Config.Adonis_Compat then
-				OspryQC:Debug("Running Check via _G.Adonis...")
+				OspryQC:debug("Running Check via _G.Adonis...")
 				
 				--// locals
 				local AdonisAPI = _G.Adonis
 				
 				--// Check for _G API
 				if not AdonisAPI then
-					warn("[OspryOS Quickchat]: Adonis _G API not availible, is G_API set to true?")
+					warn("[OspryOS Quickchat]: Adonis _G API not availible, is Adonis running?")
 					return false
 				end
 				
-				--// Check if Muted
-				return AdonisAPI.IsMuted(Plr)
+				--// Check if Playedr is Muted
+				local success, result = pcall(function()
+					return AdonisAPI.IsMuted(Plr)
+				end)
+				
+				--// Check response
+				if success then
+					return result
+					
+				else
+					--// Log
+					OspryQC:warn(`Failed to reach _G.Adonis!`)
+					OspryQC:warn(result)
+					
+					--// Return false if all other Checks did not return anything
+					return false
+				end
 			end
-			
-			--// Return false if all other Checks did not return anything
-			return false
 		end,
 	}
 end

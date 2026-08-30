@@ -1,7 +1,7 @@
 return {
 	
 	Enable_TopbarPlus = false,
-	Topbar_Icon_Keybind = Enum.KeyCode.Comma,
+	Topbar_Icon_Keybind = nil,
 	Path_To_TopbarPlus = nil,
 	
 	VR_Compatibility = false,

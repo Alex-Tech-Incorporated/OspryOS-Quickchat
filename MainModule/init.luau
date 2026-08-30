@@ -72,11 +72,30 @@ local OspryOS_Quickchat = {
 --// Essential Modules
 OspryOS_Quickchat.functions = require(Modules.functions)(OspryOS_Quickchat)
 OspryOS_Quickchat.Plugins = require(Modules.Plugins)(OspryOS_Quickchat)
+OspryOS_Quickchat.Remote = require(Modules.Remote)(OspryOS_Quickchat)
 
 --// Loading Order
 local Loading_Order = {
+	OspryOS_Quickchat.Remote,
 	OspryOS_Quickchat.functions,
 }
+
+--// Prints
+function OspryOS_Quickchat:print(...)
+	print("[OspryOS QuickChat]:", ...)
+end
+function OspryOS_Quickchat:warn(...)
+	warn("[OspryOS QuickChat]:", ...)
+end
+function OspryOS_Quickchat:debug(...)
+	if not OspryOS_Quickchat.Config.DebugMode then return end
+	warn("[OspryOS QuickChat] Debug:", ...)
+end
+
+-- LEGACY SUPPORT
+function OspryOS_Quickchat:Debug(...)
+	OspryOS_Quickchat:debug(...)
+end
 
 
 
@@ -95,13 +114,6 @@ end
 
 
 -- QC functions --
-
---// Debug Prints :P
-function OspryOS_Quickchat:Debug(...)
-	if not OspryOS_Quickchat.Config.DebugMode then return end
-	
-	warn("[OspryOS QuickChat]:", ...)
-end
 
 --// Transfers all Settings from the Loader to the MainModule
 function OspryOS_Quickchat:OverwriteConfig(config: typeof(OspryOS_Quickchat.Config))
@@ -123,13 +135,15 @@ function OspryOS_Quickchat:FindPhraseData(Text : string)
 	return nil
 end
 
---// Sends a Notification to a Player
+--// Sends a Notification to a Player or everyone if Player is nil
 function OspryOS_Quickchat:Notify(Plr : Player, Message : string, Duration : number)
-	OspryOS_Quickchat.Remotes.Notify:FireClient(
-		Plr,
-		Message,
-		Duration
-	)
+	--// Check if a Player was given
+	if not Plr then
+		OspryOS_Quickchat.Remote.SendAll("Notify", Message, Duration)
+		
+	else
+		OspryOS_Quickchat.Remote.Send(Plr, "Notify", Message, Duration)
+	end
 end
 
 
@@ -143,7 +157,7 @@ function OspryOS_Quickchat:Init(Plugins)
 	
 	--// Initialize
 	_G.OspryQC_MUTEX = true
-	print("[OspryOS QuickChat]: Initializing Server...")
+	OspryOS_Quickchat:print("Initializing Server...")
 	
 	--// Clone Shared
 	local Client_Shared = SharedBase:Clone()
@@ -152,7 +166,7 @@ function OspryOS_Quickchat:Init(Plugins)
 	OspryOS_Quickchat.Shared = Client_Shared
 	
 	--// Debug Print
-	OspryOS_Quickchat:Debug("Shared has been cloned and placed in ReplicatedStorage.")
+	OspryOS_Quickchat:debug("Shared has been cloned and placed in ReplicatedStorage.")
 	
 	--// Generate Remotes Folder
 	GenerateRemotesFolder()
@@ -165,70 +179,7 @@ function OspryOS_Quickchat:Init(Plugins)
 	--// Load Plugins
 	OspryOS_Quickchat.Plugins.Init(Plugins)
 	
-	
-	
-	-- Server Calls --
-	
-	--// Server Call for QuickChat RemoteEvent
-	OspryOS_Quickchat.Remotes.QuickChat.OnServerEvent:Connect(function(Plr : Player, Phrase : string, ArgTable : string)
-		--// Debug Print
-		OspryOS_Quickchat:Debug("Server request recieved by", Plr.Name)
-		
-		--// Check if Player is muted
-		if OspryOS_Quickchat.functions.IsMuted(Plr) then
-			OspryOS_Quickchat:Debug(Plr.Name, "is Muted, request cancelled.")
-			OspryOS_Quickchat:Notify(Plr, "You are currently Muted and unable to use the Quickchat.", 6)
-			return
-		end
-		
-		--// Check if Phrase is Valid
-		local data = OspryOS_Quickchat:FindPhraseData(Phrase)
-		if not data then
-			warn(`[OspryOS Quickchat]: {Plr.Name} has sent an invalid Phrase to the Server`)
-			Plr:Kick(
-				"[OspryOS Quickchat]"
-				.."\nAn Invalid Phrase has been sent to the Server from your Client, please rejoin."
-			)
-			return
-		end
-		
-		--// Convert Arguments or leave Phrase as is
-		local ProcessedMessage = Phrase
-		for argName, argValue in pairs(ArgTable) do
-			ProcessedMessage = ProcessedMessage:gsub("{"..argName.."}", argValue)
-		end
-		
-		--// Filter
-		local success, result = pcall(function()
-			return TextService:FilterStringAsync(
-				ProcessedMessage,
-				Plr.UserId,
-				Enum.TextFilterContext.PublicChat
-			)
-		end)
-		
-		--// Check Response
-		if not success then
-			--// Notify Player
-			OspryOS_Quickchat:Notify(
-				Plr,
-				"Something wen't wrong during filtering, please try again later!",
-				4
-			)
-			
-			--// Cancel Request
-			warn("[OspryOS Quickchat]: Something wen't wrong during filtering, got:", result)
-			return
-		end
-		
-		--// Get Filter result
-		local FilteredMessage = result:GetNonChatStringForBroadcastAsync()
-
-		--// Send to Clients
-		OspryOS_Quickchat.Remotes.QuickChat:FireAllClients(Plr, FilteredMessage)
-	end)
-	
-	--// Export Result
+	--// Loading Complete
 	return true, `OspryOS Quickchat v{OspryOS_Quickchat.Config.Version}-Server initialized.`
 end
 
