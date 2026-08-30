@@ -1,0 +1,23 @@
+{
+    "name": "OspryOS Quickchat",
+    "emitLegacyScripts": true,
+    "tree": {
+        "$className": "DataModel",
+
+        "ServerScriptService": {
+            "$className": "ServerScriptService",
+
+            "OspryOS_Quickchat_Rojo": {
+                "$className": "Folder",
+                "MainModule": {
+                    "$path": "MainModule"
+                },
+
+                "OspryOS_Quickchat_Loader": {
+                    "$className": "Folder",
+                    "$path": "Loader"
+                }
+            }
+        }
+    }
+}
