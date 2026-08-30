@@ -18,10 +18,10 @@ jobs:
         run: selene Loader MainModule
 
       - name: Build place file (Rojo)
-        run: rojo build default.project.json --output Anticheat.rbxl
+        run: rojo build default.project.json --output Quickchat.rbxl
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: anticheat-build
-          path: Anticheat.rbxl
+          name: quickchat-build
+          path: Quickchat.rbxl
