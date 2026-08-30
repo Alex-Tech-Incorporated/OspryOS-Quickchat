@@ -60,7 +60,7 @@ return function(OspryQC)
 				OspryQC_Client.Enabled = true
 			end)
 			
-			OspryQC:Debug("Calls Initialized!")
+			OspryQC:Debug("functions Initialized.")
 		end,
 		
 		--// Checks the _G API of a supported Admin System to see if the Player is muted
