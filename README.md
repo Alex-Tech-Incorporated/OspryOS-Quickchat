@@ -9,5 +9,11 @@ Please check out our [Setup Guide](https://github.com/Alex-Tech-Incorporated/Osp
 ## TopbarPlus, VRBottomBar and VR Support
 It is recommended to take a look at our Documentation for topics related to TopbarPlus, VRBottomBar or VR support.
 
+# Credits
+## Contributors
+<a href="https://github.com/Alex-Tech-Incorporated/OspryOS-Quickchat/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=Alex-Tech-Incorporated/OspryOS-Quickchat" />
+</a>
+
 ## License
 This Project is availible under the Terms of the [MIT License](https://github.com/Alex-Tech-Incorporated/OspryOS-Quickchat/blob/main/LICENSE.md).
