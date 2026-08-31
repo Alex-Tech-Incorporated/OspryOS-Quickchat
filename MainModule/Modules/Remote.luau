@@ -105,7 +105,7 @@ return function (OspryQC)
 				local TextService = game:GetService("TextService")
 				
 				--// Debug Print
-				OspryQC:debug("Server request recieved by", Plr.Name)
+				OspryQC:debug("Process_Message signal recieved from", Plr.Name)
 
 				--// Check if Player is muted
 				if OspryQC.functions.IsMuted(Plr) then
@@ -165,7 +165,7 @@ return function (OspryQC)
 				local FilteredMessage = result:GetNonChatStringForBroadcastAsync()
 				
 				--// Send to Clients
-				OspryQC.Remote.SendAll("NewMessage", FilteredMessage)
+				OspryQC.Remote.SendAll("NewMessage", Plr, FilteredMessage)
 			end,
 		}
 	}

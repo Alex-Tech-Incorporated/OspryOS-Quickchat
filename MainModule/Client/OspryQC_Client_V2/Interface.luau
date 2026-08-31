@@ -10,6 +10,14 @@ local MenuInfo = TweenInfo.new(
 	0.75,
 	Enum.EasingStyle.Exponential
 )
+local SlideInfo = TweenInfo.new(
+	0.75,
+	Enum.EasingStyle.Exponential
+)
+local ListInfo = TweenInfo.new(
+	0.3,
+	Enum.EasingStyle.Exponential
+)
 
 --// Interface Table
 local Interface = {
@@ -173,8 +181,9 @@ return function (Client)
 			--// Create Button
 			GenerateButton()
 			
-			--// Create Interface
+			--// Create Interface and Pages
 			Client.Interface.Create_Interface()
+			Client.Interface.Create_Pages()
 		end,
 		
 		--// Creates the Client Interface
@@ -257,6 +266,227 @@ return function (Client)
 					end)
 				end)
 			end
+		end,
+		
+		--// Creates all Pages
+		Create_Pages = function()
+			--// locals
+			local Phrases = Client.Phrases
+			local Root = Phrases[1]
+			Client:debug(`Fetched Categories and Phrases. Expand to view results:`, Root)
+			
+			--// locals
+			local Gui = Plr:WaitForChild("PlayerGui"):WaitForChild("OspryQC_Menu")
+			local Pages = Gui:WaitForChild("Background"):WaitForChild("Pages")
+			local CategoryOptions = Gui:WaitForChild("Background"):WaitForChild("Options")
+			local Templates = Client.Shared:WaitForChild("UI"):WaitForChild("Templates")
+			
+			--// Generate Categorys
+			for categoryName, phraseMap in pairs(Root) do
+				--// Generate Category Button
+				local catButton = Templates.TemplateButton:Clone() :: TextButton
+				catButton.Name = categoryName
+				catButton.Text = categoryName
+				catButton.Parent = CategoryOptions
+
+				--// Generate Category
+				local catPage = Templates.PageTemplate:Clone() :: Frame
+				catPage.Name = categoryName
+				catPage.catName.Text = categoryName
+				catPage.Parent = Pages
+
+				--// Category Selection Frame
+				local Selection = catPage:WaitForChild("Selection")
+
+				--// Generate Buttons for each Category
+				for phraseId, data in pairs(phraseMap) do
+					--// Phrase Buttons
+					local Button = Templates.TemplateButton:Clone() :: TextButton
+					Button.Text = data.Text
+					Button.Parent = Selection
+
+					--// Connection
+					Button.MouseButton1Click:Connect(function()
+						if Client.Debounce then
+							--// Display Notification
+							Client.Interface.Notify(
+								"Please wait before sending another Message!",
+								6
+							)
+							return
+						end
+						Client.Debounce = true
+
+						--// locals
+						local phraseText = data.Text
+						local args = {}
+
+						--// Find Arguments
+						for argName in phraseText:gmatch("{(.-)}") do
+							table.insert(args, argName)
+						end
+
+						--// Send if no Arguments were found
+						if #args == 0 then
+							Client.Remote.Send("Process_Message", phraseText, {})
+							return
+						end
+
+						--// Fill Tables
+						Client.SelectedPhrase = phraseText
+						Client.PendingArgs = {}
+						Client.RequiredArgs = args
+
+						Client.Plugins.ProcessArguments()
+					end)
+				end
+
+
+
+				-- Connections --
+				
+				--// Connection for the Category Button
+				catButton.MouseButton1Click:Connect(function()
+					--// Hide all Pages
+					for _, p in pairs(Pages:GetChildren()) do
+						if p:IsA("Frame") then
+
+							--// Generate Tween
+							TS:Create(p, SlideInfo, {Position = Interface.Positions.Pages.Hidden}):Play()
+						end
+					end
+
+					--// Tween Options Frame
+					TS:Create(CategoryOptions, SlideInfo, {Position = Interface.Positions.Pages.Hidden}):Play()
+
+					--// Tween Selected Frame
+					TS:Create(catPage, SlideInfo, {Position = Interface.Positions.Pages.Shown}):Play()
+					task.delay(1, function()
+						catPage.Position = Interface.Positions.Pages.Shown
+					end)
+				end)
+
+				--// Connection for all Category Return Buttons
+				Selection.ReturnToOptions.MouseButton1Click:Connect(function()
+					--// Hide all Pages
+					for _, p in pairs(Pages:GetChildren()) do
+						if p:IsA("Frame") then
+
+							--// Generate Tween
+							TS:Create(p, SlideInfo, {Position = Interface.Positions.Pages.Hidden}):Play()
+							task.delay(1, function()
+								p.Position = Interface.Positions.Pages.Hidden
+							end)
+						end
+					end
+
+					--// Tween Options Frame
+					TS:Create(CategoryOptions, SlideInfo, {Position = Interface.Positions.Pages.Hidden}):Play()
+				end)
+			end
+
+			--// Complete?
+			Client:debug("Generated Pages.")
+		end,
+		
+		--// Creates a List of options given by the Argument's Name
+		CreateList = function(argName : string)
+			--// Fetch Gui Data
+			local guiData = Client.ArgumentTypes[argName]
+			if not guiData then
+				Client:warn(`{tostring(argName)} is not a valid Argument.`)
+				return
+			end
+			Client:debug(guiData)
+
+			--// Generate Gui
+			local Gui = Shared_UI:FindFirstChild("OspryQC_List"):Clone()
+			local Background = Gui.Background
+			local List = Background.Options
+
+			--// Set Gui Parent
+			Background.Title.Text = guiData.Title
+			Gui.Parent = PlayerGui
+			TS:Create(Background.UIScale, ListInfo, {Scale = 1}):Play()
+
+			--// Closes the Gui
+			local function CloseList()
+				--// Close Menu
+				TS:Create(Background.UIScale, ListInfo, {Scale = 0}):Play()
+				task.delay(0.2, function()
+					Gui:Destroy()
+				end)
+			end
+
+			--// Generate Close Button
+			local CloseButton = GenerateCloseBtn()
+			CloseButton.Parent = List
+
+			--// Populate List
+			local options = guiData.Populate(Plr)
+			for _, option in ipairs(options) do
+				local Button = Instance.new("TextButton")
+				Button.Size = UDim2.new(0.8, 0, 0, 40)
+				Button.Text = tostring(option)
+				Button.Name = "Option_Button"
+
+				--// Edit
+				Button.BackgroundTransparency = 1
+				Button.TextStrokeTransparency = 0
+				Button.TextColor3 = Color3.fromRGB(255, 255, 255)
+				Button.Font = Enum.Font.Jura
+				Button.TextScaled = true
+				Button.Parent = List
+
+				--// Connect
+				Button.MouseButton1Click:Connect(function()
+					Client.PendingArgs[argName] = option
+					CloseList()
+					Client.Plugins.ProcessArguments()
+				end)
+			end
+
+			--// CloseButton Connection
+			CloseButton.MouseButton1Click:Connect(function()
+				CloseList()
+
+				--// Reset Debounce
+				task.wait(Config.Chat_Cooldown)
+				Client.Debounce = false
+			end)
+		end,
+		
+		--// Creates and Displays a Notification
+		Notify = function(Message : string, Duration : number)
+			--// locals
+			local Notif_Duration = Duration or 4
+
+			--// Find Notification Template
+			local Template = Shared_UI:FindFirstChild("OspryQC_Notif")
+			if not Template then Client:warn(`Failed to find Notification Template in {Shared_UI:GetFullName()}`) return end
+
+			--// Clone Notification
+			local Notif = Template:Clone()
+			Notif.Background.Message.Text = Message
+			Notif.Background.Position = UDim2.new(1.01, 0, 0.831, 0)
+			Notif.Parent = PlayerGui
+
+			--// Tween
+			TS:Create(Notif.Background, MenuInfo, {BackgroundTransparency = 0.6}):Play()
+			TS:Create(Notif.Background.UIStroke, MenuInfo, {Transparency = Config.UI.Stroke_Transparency}):Play()
+			TS:Create(Notif.Background, MenuInfo, {Position = UDim2.new(0.744, 0, 0.831, 0)}):Play()
+
+			task.wait(Notif_Duration)
+
+			--// Tween
+			TS:Create(Notif.Background, MenuInfo, {BackgroundTransparency = 1}):Play()
+			TS:Create(Notif.Background.UIStroke, MenuInfo, {Transparency = 1}):Play()
+			TS:Create(Notif.Background, MenuInfo, {Position = UDim2.new(1.01, 0, 0.831, 0)}):Play()
+			
+			--// Destroy UI
+			task.delay(0.75, function()
+				Notif:Destroy()
+			end)
 		end,
 	}
 end

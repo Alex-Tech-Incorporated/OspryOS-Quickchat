@@ -35,5 +35,21 @@ return function (Client)
 			Client.ArgumentTypes[argName] = guiData
 			Client:debug(`Registered Argument: {argName}`)
 		end,
+		
+		--// Processes an Argument
+		ProcessArguments = function()
+			--// locals
+			local nextArg = table.remove(Client.RequiredArgs, 1)
+			Client:debug("Processing Arguments...")
+
+			--// Check if there are no Arguments remaining within Client.RequiredArgs.
+			if not nextArg then
+				Client.Remote.Send("Process_Message", Client.SelectedPhrase, Client.PendingArgs)
+				return
+			end
+			
+			--// Create List
+			Client.Interface.CreateList(nextArg)
+		end,
 	}
 end

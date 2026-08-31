@@ -29,6 +29,7 @@ return function (Client)
 			--// Loads the Client
 			Load_Client = function()
 				Client:print(`Loading Client...`)
+				local start = os.clock()
 				
 				--// Configure Client
 				local Config = Client.Remote.get_Config:InvokeServer()
@@ -48,7 +49,16 @@ return function (Client)
 				
 				--// Complete
 				Client:print(`OspryOS Quickchat Client v{Client.Config.Version} loaded.`)
+				Client:debug(`Loading took: {os.clock() - start} seconds.`)
 				Client.Remote.Send("Client_Loaded")
+				
+				--// Welcome Notification
+				if Config.UI.Welcome_Message then
+					Client.Interface.Notify(
+						`Hello {Client.Plr.DisplayName}! Client v{Config.Version} has successfully initialized.`,
+						6
+					)
+				end
 			end,
 			
 			--// Displays a Quickchat Message
@@ -69,12 +79,12 @@ return function (Client)
 						Message
 					)
 				)
-				Client:debug("Chat Message recieved from", Sender.Name)
+				Client:debug("Got Message from Server by", Sender.Name)
 			end,
 			
 			--// Displays a Notification
 			Notify = function(Message : string, Duration : number)
-				
+				Client.Interface.Notify(Message, Duration)
 			end,
 		},
 	}
