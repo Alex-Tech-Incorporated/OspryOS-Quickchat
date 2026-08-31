@@ -180,7 +180,7 @@ function OspryOS_Quickchat:Init(Plugins)
 	OspryOS_Quickchat.Plugins.Init(Plugins)
 	
 	--// Loading Complete
-	return true, `OspryOS Quickchat v{OspryOS_Quickchat.Config.Version}-Server initialized.`
+	return true, `OspryOS Quickchat v{OspryOS_Quickchat.Config.Version}-Server initialized`
 end
 
 --// Export

@@ -30,7 +30,6 @@ local Client = {
 		Path_To_NexusVRCore = nil,
 
 		--// VRBottomBar
-		Enable_VRBottomBar = false,
 		Path_To_VRBottomBar = nil,
 		VRBottomBar_Position = 1,
 
@@ -80,10 +79,12 @@ local Client = {
 Client.Remote = require(script:WaitForChild("Remote"))(Client)
 Client.Plugins = require(script:WaitForChild("Plugins"))(Client)
 Client.Interface = require(script:WaitForChild("Interface"))(Client)
+Client.VR = require(script:WaitForChild("VR"))(Client)
 
 --// Client Load Order
 Client.Module_LoadingOrder = {
 	Client.Plugins,
+	Client.VR,
 	Client.Interface,
 }
 

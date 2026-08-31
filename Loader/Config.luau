@@ -10,9 +10,8 @@ return {
 	Use_NexusVR_Inbuild_Core = false, -- Uses the inbuild NexusVRCore Module from Nexus VR Character Module (Deprecated)
 	Path_To_NexusVRCore = nil, -- The Path to NexusVRCore (Not required if Use_NexusVR_Inbuild_Core is set to true)
 	
-	--// VRBottomBar Integration, can be used with TopbarPlus (Recomended) or without
-	Enable_VRBottomBar = false, -- Enables Compatibility for "VRBottomBar", made by TheNexusAvenger. (https://github.com/IITPP-Roblox/VR-Bottom-Bar)
-	Path_To_VRBottomBar = nil, -- The Path to the "VRBottomBar" Module
+	--// VRBottomBar Integration, required for VR Compatibility
+	Path_To_VRBottomBar = nil, -- The Path to the "VRBottomBar" Module, made by TheNexusAvenger. (https://github.com/IITPP-Roblox/VR-Bottom-Bar)
 	VRBottomBar_Position = 1, -- The Position of the Button for Bottom Bar
 	
 	--// Admin System Compatability

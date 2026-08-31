@@ -117,6 +117,8 @@ return function (Client)
 	
 	--// Generates the Topbar Icon of the Quickchat
 	local function GenerateButton()
+		if UIS.VREnabled and Config.VR_Compatibility then Client.VR.Create_Icon() return end
+		
 		if Config.Enable_TopbarPlus then
 			--// pcall
 			local success, result = pcall(function()
@@ -188,6 +190,7 @@ return function (Client)
 		
 		--// Creates the Client Interface
 		Create_Interface = function()
+			if UIS.VREnabled and Config.VR_Compatibility then Client.VR.Create_Interface() return end
 			Client:debug(`Generating Interface...`)
 			
 			--// Menu
@@ -270,6 +273,8 @@ return function (Client)
 		
 		--// Creates all Pages
 		Create_Pages = function()
+			if UIS.VREnabled and Config.VR_Compatibility then Client.VR.Create_Pages() return end
+			
 			--// locals
 			local Phrases = Client.Phrases
 			local Root = Phrases[1]
@@ -380,7 +385,7 @@ return function (Client)
 					end
 
 					--// Tween Options Frame
-					TS:Create(CategoryOptions, SlideInfo, {Position = Interface.Positions.Pages.Hidden}):Play()
+					TS:Create(CategoryOptions, SlideInfo, {Position = Interface.Positions.Pages.Shown}):Play()
 				end)
 			end
 
@@ -390,6 +395,8 @@ return function (Client)
 		
 		--// Creates a List of options given by the Argument's Name
 		CreateList = function(argName : string)
+			if UIS.VREnabled and Config.VR_Compatibility then Client.VR.CreateList() return end
+			
 			--// Fetch Gui Data
 			local guiData = Client.ArgumentTypes[argName]
 			if not guiData then
@@ -457,6 +464,8 @@ return function (Client)
 		
 		--// Creates and Displays a Notification
 		Notify = function(Message : string, Duration : number)
+			if UIS.VREnabled and Config.VR_Compatibility then Client.VR.Notify(Message, Duration) return end
+			
 			--// locals
 			local Notif_Duration = Duration or 4
 

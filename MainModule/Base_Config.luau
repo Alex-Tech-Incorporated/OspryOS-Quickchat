@@ -8,7 +8,6 @@ return {
 	Use_NexusVR_Inbuild_Core = false,
 	Path_To_NexusVRCore = nil,
 	
-	Enable_VRBottomBar = false,
 	Path_To_VRBottomBar = nil,
 	VRBottomBar_Position = 1,
 	

@@ -29,8 +29,12 @@ local OspryQC
 
 --// Loader Table
 local Loader = {
+	--// Essentials
 	Config = require(LoaderConfig),
 	Plugins = Container:WaitForChild("Plugins"),
+	
+	--// Internal
+	Version = "1.3.0",
 }
 
 function Loader:print(...)
@@ -74,7 +78,7 @@ local loaded, response = OspryQC:Init(Loader.Plugins)
 
 --// Check if MainModule loaded
 if loaded then
-	Loader:print(`{response}`)
+	Loader:print(`{response}, required by Loader v{Loader.Version}`)
 	
 else
 	Loader:warn(`Failed to initialize MainModule.`)
