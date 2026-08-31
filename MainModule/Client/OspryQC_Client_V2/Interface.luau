@@ -279,7 +279,6 @@ return function (Client)
 			local Gui = Plr:WaitForChild("PlayerGui"):WaitForChild("OspryQC_Menu")
 			local Pages = Gui:WaitForChild("Background"):WaitForChild("Pages")
 			local CategoryOptions = Gui:WaitForChild("Background"):WaitForChild("Options")
-			local Templates = Client.Shared:WaitForChild("UI"):WaitForChild("Templates")
 			
 			--// Generate Categorys
 			for categoryName, phraseMap in pairs(Root) do
