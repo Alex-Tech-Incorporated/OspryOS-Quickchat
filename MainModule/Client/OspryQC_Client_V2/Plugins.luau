@@ -45,6 +45,9 @@ return function (Client)
 			--// Check if there are no Arguments remaining within Client.RequiredArgs.
 			if not nextArg then
 				Client.Remote.Send("Process_Message", Client.SelectedPhrase, Client.PendingArgs)
+				task.delay(Client.Config.Chat_Cooldown, function()
+					Client.Debounce = false
+				end)
 				return
 			end
 			

@@ -333,6 +333,9 @@ return function (Client)
 						--// Send if no Arguments were found
 						if #args == 0 then
 							Client.Remote.Send("Process_Message", phraseText, {})
+							task.delay(Config.Chat_Cooldown, function()
+								Client.Debounce = false
+							end)
 							return
 						end
 
@@ -395,7 +398,7 @@ return function (Client)
 		
 		--// Creates a List of options given by the Argument's Name
 		CreateList = function(argName : string)
-			if UIS.VREnabled and Config.VR_Compatibility then Client.VR.CreateList() return end
+			if UIS.VREnabled and Config.VR_Compatibility then Client.VR.CreateList(argName) return end
 			
 			--// Fetch Gui Data
 			local guiData = Client.ArgumentTypes[argName]

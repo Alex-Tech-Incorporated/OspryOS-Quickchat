@@ -142,7 +142,7 @@ return function (Client)
 	--// Toggles the Visibility of the HomePage
 	local function ToggleHomePage(Shown : boolean)
 		--// locals
-		local Interface = VR.Interface.Gui_Interface:GetContainer()
+		local Interface = VR.Interface.Container:GetContainer()
 		local Frame = Interface:WaitForChild("Container")
 		local HomePage = Frame:WaitForChild("Home")
 
@@ -409,6 +409,13 @@ return function (Client)
 				local ReturnButton = BottomBar:WaitForChild("ReturnButton")
 				local PhraseSelection = CategoryPage:WaitForChild("Phrases")
 				
+				--// Configure Interface
+				ConfigureUI({
+					BottomBar,
+					ReturnButton,
+				})
+				ReturnButton.TextColor3 = Config.UI.Stroke_Color
+				
 				--// Generate Phrases
 				for phraseId, data in pairs(phraseMap) do
 					--// Create a new Button
@@ -440,6 +447,9 @@ return function (Client)
 						--// Send if no Arguments were found
 						if #args == 0 then
 							Client.Remote.Send("Process_Message", phraseText, {})
+							task.delay(Config.Chat_Cooldown, function()
+								Client.Debounce = false
+							end)
 							return
 						end
 
@@ -475,22 +485,22 @@ return function (Client)
 			if not Config.VR_Compatibility then return end
 			if VR.List then return end
 			VR.List = true
-
-			--// Fetch Gui Data
-			local guiData = Client.ArgumentTypes[argName]
-			if not guiData then
-				VR:Warn(`"{tostring(argName)}" is not a valid Argument.`)
-				return
-			end
-
+			
 			--// locals
 			local UIScale = VR.Interface.List.UIScale
 			local Title = VR.Interface.List.Title
 			local List = VR.Interface.List.Options
 
-			--// Set Elements
-			Title.Text = guiData.Title
-
+			--// Fetch Gui Data
+			local guiData = Client.ArgumentTypes[argName]
+			if not guiData then
+				Client:warn(`"{tostring(argName)}" is not a valid Argument.`)
+				
+				VR.List = false
+				Client.Debounce = false
+				return
+			end
+			
 			--// Closes the List
 			local function CloseList()
 				TweenScale(UIScale, MenuInfo, 0)
@@ -506,6 +516,9 @@ return function (Client)
 					end
 				end)
 			end
+
+			--// Set Elements
+			Title.Text = guiData.Title
 
 			--// Generate Close Button
 			local CloseButton = GenerateCloseBtn()
@@ -539,7 +552,7 @@ return function (Client)
 				Button.MouseButton1Click:Connect(function()
 					Client.PendingArgs[argName] = option
 					CloseList()
-					Client:ProcessArguments()
+					Client.Plugins.ProcessArguments()
 				end)
 			end
 
