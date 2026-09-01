@@ -36,7 +36,7 @@ return function(OspryQC)
 				
 				--// Check for _G API
 				if not AdonisAPI then
-					warn("[OspryOS Quickchat]: Adonis _G API not availible, is Adonis running?")
+					OspryQC:warn(`Adonis _G API is not availible.`)
 					return false
 				end
 				
