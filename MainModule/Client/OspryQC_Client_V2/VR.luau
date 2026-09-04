@@ -97,7 +97,7 @@ return function (Client)
 	end
 	
 	--// Configures all the UI to the options set via the Config
-	local function ConfigureUI(Elements : {any})
+	local function ConfigureUI(Elements : {any}, ColorText : boolean)
 		Client:debug(Elements)
 
 		--// Configure
@@ -118,12 +118,16 @@ return function (Client)
 			elseif Interface_Object:IsA("TextButton") or Interface_Object:IsA("ImageButton") then
 				--// locals
 				local UIStroke = Interface_Object:FindFirstChildWhichIsA("UIStroke") :: UIStroke
-				if not UIStroke then return end
+				if not UIStroke then
+					Interface_Object.TextColor3 = Config.UI.Stroke_Color
+					return
+				end
 
 				--// Modify Elements
 				UIStroke.Color = Config.UI.Stroke_Color
 				UIStroke.Thickness = Config.UI.Stroke_Thickness
 				UIStroke.Transparency = Config.UI.Stroke_Transparency
+				if ColorText then Interface_Object.TextColor3 = Config.UI.Stroke_Color end
 
 				Interface_Object.BackgroundColor3 = Config.UI.Background_Color
 			end
@@ -230,15 +234,19 @@ return function (Client)
 				Client:print(`Found TopbarPlus`)
 			end
 			
+			--// Base Templates
+			local Page_Template = Templates:WaitForChild("PageTemplate")
+			
 			--// Configure Interface
 			ConfigureUI({
 				Shared_VR:WaitForChild("Container"),
 				Shared_VR:WaitForChild("List_Container"),
 				Shared_VR:WaitForChild("Notif_Container"),
 				
-				Templates:WaitForChild("PageTemplate"),
+				Page_Template,
 				Templates:WaitForChild("TemplateButton")
 			})
+			ConfigureUI({Page_Template:WaitForChild("BottomBar"):WaitForChild("ReturnButton")}, true)
 		end,
 		
 		--// Creates an Icon for VR Users
@@ -312,6 +320,10 @@ return function (Client)
 			VR.Interface.Container = VR_Interface
 			
 			local Interface_Container = Shared_VR:WaitForChild("Container"):Clone()
+			local VersionText = Interface_Container:WaitForChild("Home"):WaitForChild("Home"):WaitForChild("Version")
+			
+			VersionText.Text = `Version: {if Config.Version then Config.Version else `?`}`
+			
 			VR.Interface.UIScale = Interface_Container:WaitForChild("UIScale")
 			VR.Interface.UIScale.Scale = 0
 			Interface_Container.Parent = VR.Interface.Container:GetContainer()

@@ -103,7 +103,10 @@ return function (Client)
 			elseif Interface_Object:IsA("TextButton") or Interface_Object:IsA("ImageButton") then
 				--// locals
 				local UIStroke = Interface_Object:FindFirstChildOfClass("UIStroke") :: UIStroke
-				if not UIStroke then return end
+				if not UIStroke then
+					Interface_Object.TextColor3 = Config.UI.Stroke_Color
+					return
+				end
 				
 				--// Modify Elements
 				UIStroke.Color = Config.UI.Stroke_Color
@@ -195,7 +198,14 @@ return function (Client)
 			
 			--// Menu
 			local QC_Menu = Shared_UI:WaitForChild("OspryQC_Menu"):Clone() :: ScreenGui
-			QC_Menu:WaitForChild("Background").Position = Interface.Positions.Menu.Hidden
+			
+			--// Modify
+			local Background = QC_Menu:WaitForChild("Background")
+			local Options_Page = Background:WaitForChild("Options")
+			local VersionText = Options_Page:WaitForChild("Logo"):WaitForChild("Version")
+			
+			Background.Position = Interface.Positions.Menu.Hidden
+			VersionText.Text = `Version: {if Config.Version then Config.Version else `?`}`
 			QC_Menu.Parent = PlayerGui
 			
 			--// Connect Button or Icon

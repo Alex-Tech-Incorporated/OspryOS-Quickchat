@@ -8,16 +8,12 @@ body:
     attributes:
       value: "Before creating a Bug Report, please Update the Quickchat first, and check issues if the Bug has already been reported."
   
-  - type: dropdown
-    id: version_channel
+  - type: input
+    id: quickchat-version
     attributes:
-      label: Version Channel
-      options:
-        - Stable (Default)
-        - Development
-      default: 0
-    validations:
-      required: true
+      label: Loader Version
+      placeholder: I.e. 1.2.4
+      description: You can find the Loader "OspryOS_Quickchat_Loader" > `Loader.Version`
 
   - type: dropdown
     id: device
@@ -32,13 +28,6 @@ body:
       default: 1
     validations:
       required: true
-  
-  - type: input
-    id: anticheat_version
-    attributes:
-      label: Loader Version
-      placeholder: I.e. 1.2.4
-      description: You can find the Loader "OspryOS_Quickchat_Loader" > `Loader.Version`
   
   - type: textarea
     id: description
