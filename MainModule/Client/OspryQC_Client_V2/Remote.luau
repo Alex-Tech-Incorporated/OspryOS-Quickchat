@@ -67,9 +67,9 @@ return function (Client)
 				local QC_Template = Client:format(Sender, Message)
 
 				--// Send Chat Message
-				TextChatService.TextChannels.RBXSystem:DisplaySystemMessage(
-					QC_Template
-				)
+				if Client.Config.UI.Sent_To_Chat then
+					TextChatService.TextChannels.RBXSystem:DisplaySystemMessage(QC_Template)
+				end
 
 				--// Chat Bubble
 				TextChatService:DisplayBubble(

@@ -62,6 +62,7 @@ return {
 		PlayerNameColor = "#0078FF", -- The HEX Code of the Player's Name Color in Chat
 		PlayerMessageColor = "#FFFFFF", -- The HEX Code of the Message Color when using Quickchat
 		
+		Sent_To_Chat = true, -- Prevents Quickchat Messages from being sent into the Chat Channel
 		Welcome_Message = true, -- Displays the Client Welcome Message for the Player if the Client loaded.
 	},
 	

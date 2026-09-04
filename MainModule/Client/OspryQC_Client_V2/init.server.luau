@@ -45,7 +45,8 @@ local Client = {
 			Message_punctuation = "*",
 			PlayerNameColor = "#FFFFFF",
 			PlayerMessageColor = "#FFFFFF",
-
+			
+			Sent_To_Chat = true,
 			Welcome_Message = true,
 		},
 
