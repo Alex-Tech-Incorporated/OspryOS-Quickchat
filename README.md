@@ -1,6 +1,10 @@
 # OspryOS Quickchat
 A simple and lightweight Quickchat System made for Roblox, with Plugin Support and Nexus VR Core compatibility.
 
+> [!CAUTION]
+> **Roblox is intreducing new requirements for QuickChat Systems with the May 2027 deadline.**
+> Due to the old Codebase of the Project, I may completely redo it. Please refrain from using versions below 1.3.1 padt the deadline.
+
 ## Setup
 Please check out our [Setup Guide](https://github.com/Alex-Tech-Incorporated/OspryOS-Quickchat/wiki/Setup) to help you get started with the Quickchat!
 > [!IMPORTANT]
