@@ -3,7 +3,7 @@ A simple and lightweight Quickchat System made for Roblox, with Plugin Support a
 
 > [!CAUTION]
 > **Roblox is intreducing new requirements for QuickChat Systems with the May 2027 deadline.**
-> Due to the old Codebase of the Project, I may completely redo it the MainModule and Loader, as `TextChannel:SendAsync()` and a dedicatex Phrases Table in a Module schould no longer be used.
+> Due to the old Codebase of the Project, I may completely redo the MainModule and Loader, as `TextChannel:SendAsync()` and a dedicated Phrases Table in a Module schould no longer be used.
 
 ## Setup
 Please check out our [Setup Guide](https://github.com/Alex-Tech-Incorporated/OspryOS-Quickchat/wiki/Setup) to help you get started with the Quickchat!
